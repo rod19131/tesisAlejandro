@@ -1,0 +1,150 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/solids/protos/SolidTorus.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.3400254626136294 -0.2755197911566862 0.899150448732226 4.959854350359365
+  position -0.2736104871741587 2.6515719046949586 1.6749121708517063
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF Arena RectangleArena {
+  floorSize 4 2
+  floorTileSize 2 2
+}
+DEF Obs1 SolidTorus {
+  translation -0.141 0 0
+  majorRadius 0.07
+  minorRadius 0.1
+  appearance PBRAppearance {
+    baseColor 0.333 0 0.498
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/default/worlds/textures/tagged_wall.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+DEF Obs2 SolidTorus {
+  translation -0.5 0.75 0
+  name "torus(1)"
+  majorRadius 0.07
+  minorRadius 0.1
+  appearance PBRAppearance {
+    baseColor 0.333 0 0.498
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/default/worlds/textures/tagged_wall.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+DEF Obs3 SolidTorus {
+  translation -0.75 -0.5 0
+  name "torus(2)"
+  majorRadius 0.07
+  minorRadius 0.1
+  appearance PBRAppearance {
+    baseColor 0.333 0 0.498
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/default/worlds/textures/tagged_wall.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+DEF OBJ Solid {
+  translation -1 0.3 0.3
+  rotation 0 1 0 0
+  children [
+    DEF BALL_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.54 0.08
+        roughness 0.3
+        metalness 0
+      }
+      geometry Sphere {
+        radius 0.1
+      }
+    }
+  ]
+  name "ball"
+  model "ball"
+  boundingObject USE BALL_SHAPE
+}
+E-puck {
+  translation 0 0 5
+  rotation 1 0 0 0
+  controller "Errores2SupervisorObstaculos3"
+  controllerArgs [
+    "Robot"
+  ]
+  supervisor TRUE
+}
+DEF Agente0 E-puck {
+  translation 0.11 0 0
+  name "Agente0"
+  controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    ""
+  ]
+}
+DEF Agente1 E-puck {
+  translation 0.28 0 0
+  name "Agente1"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente2 E-puck {
+  translation 0.48 0 0
+  name "Agente2"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente3 E-puck {
+  translation 0.66 0 0
+  name "Agente3"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente4 E-puck {
+  translation 0.87 0 0
+  name "Agente4"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente5 E-puck {
+  translation 1.04 0 0
+  name "Agente5"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente6 E-puck {
+  translation 1.21 0 0
+  name "Agente6"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente7 E-puck {
+  translation 1.37 0 0
+  name "Agente7"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente8 E-puck {
+  translation 1.53 0 0
+  name "Agente8"
+  controller "pruebaMatrizDifeomorfismo"
+}
+DEF Agente9 E-puck {
+  translation 1.7 0 0
+  name "Agente9"
+  controller "pruebaMatrizDifeomorfismo"
+}
