@@ -100,51 +100,168 @@ DEF Agente0 E-puck {
   name "Agente0"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
-    ""
+    "0"
+  ]
+  customData "0"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
   ]
 }
 DEF Agente1 E-puck {
   translation 0.28 0 0
   name "Agente1"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "1"
+  ]
+  customData "1"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente2 E-puck {
   translation 0.48 0 0
   name "Agente2"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "2"
+  ]
+  customData "2"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente3 E-puck {
   translation 0.66 0 0
   name "Agente3"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "3"
+  ]
+  customData "3"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente4 E-puck {
   translation 0.87 0 0
   name "Agente4"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "4"
+  ]
+  customData "4"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente5 E-puck {
   translation 1.04 0 0
   name "Agente5"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "5"
+  ]
+  customData "5"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente6 E-puck {
   translation 1.21 0 0
   name "Agente6"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "6"
+  ]
+  customData "6"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente7 E-puck {
   translation 1.37 0 0
   name "Agente7"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "7"
+  ]
+  customData "7"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente8 E-puck {
   translation 1.53 0 0
   name "Agente8"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "8"
+  ]
+  customData "8"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }
 DEF Agente9 E-puck {
   translation 1.7 0 0
   name "Agente9"
   controller "pruebaMatrizDifeomorfismo"
+  controllerArgs [
+    "9"
+  ]
+  customData "9"
+  turretSlot [
+    Compass {
+    }
+  ]
+  groundSensorsSlot [
+    GPS {
+    }
+  ]
 }

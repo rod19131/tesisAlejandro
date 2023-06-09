@@ -28,16 +28,16 @@ a = 0.0355
 
 # Robot instance.
 robot = Robot()
-argc = int(robot.getControllerArguments())
+argc = int(robot.getCustomData())
 
 # Enable compass
-compass = robot.getCompass("compass")
+compass = robot.getDevice("compass")
 compass.enable(TIME_STEP)
 robot.step(TIME_STEP)
 
 # get a handler to the motors and set target position to infinity (speed control)
-leftMotor = robot.getMotor('left wheel motor')
-rightMotor = robot.getMotor('right wheel motor')
+leftMotor = robot.getDevice('left wheel motor')
+rightMotor = robot.getDevice('right wheel motor')
 leftMotor.setPosition(float('inf'))
 rightMotor.setPosition(float('inf'))
 leftMotor.setVelocity(0)
