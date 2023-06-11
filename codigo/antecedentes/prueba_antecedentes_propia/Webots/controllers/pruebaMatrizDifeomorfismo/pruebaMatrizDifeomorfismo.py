@@ -13,7 +13,7 @@
 """pruebaMatrizDifeomorfismo controller."""
 
 # Import de librerías
-from controller import Robot
+from controller import Robot, Compass, Motor
 import math
 import numpy as np
 import pickle
@@ -55,18 +55,18 @@ while robot.step(TIME_STEP) != -1:
             V = pickle.load(f)
     
     # Posición nueva/final
-    posFinal = np.asarray([posNuevas[0][argc], -6.39203e-05, posNuevas[1][argc]])
+    posFinal = np.asarray([posNuevas[0][argc], posNuevas[1][argc], -6.39203e-05])
     # print("posFinal",posFinal)
     
     # Posición actual
-    posAct = np.asarray([posActuales[0, argc], -6.39203e-05, posActuales[1, argc]])
+    posAct = np.asarray([posActuales[0, argc], posActuales[1, argc], -6.39203e-05])
     # print("posAct",posAct)
     
     # Velocidades
     
     # Orientación robot
     comVal = compass.getValues()
-    angRad = math.atan2(comVal[0],comVal[2])
+    angRad = math.atan2(comVal[1],comVal[0])
     angDeg = (angRad/math.pi)*180
     if(angDeg < 0):
         angDeg = angDeg + 360

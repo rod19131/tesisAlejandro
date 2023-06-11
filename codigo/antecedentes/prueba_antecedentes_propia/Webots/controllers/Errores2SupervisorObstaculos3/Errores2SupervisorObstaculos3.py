@@ -42,7 +42,7 @@ supervisor.step(TIME_STEP)
 arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
 sizeVec = size.getSFVec2f()	# vector con el tamaño de la arena
-
+print(sizeVec)
 """ OBSTACULOS """
 cantO = 3			# cantidad de obstáculos
 obs1 = supervisor.getFromDef("Obs1")
@@ -144,7 +144,7 @@ for I in range(0,cantI):
             for i in range(1,N):
                 for j in range(1,cantO):
                     # diferencia entre las posiciones
-                    resta = math.sqrt((X[0,i]-posObs[j].getSFVec3f()[0])**2 + (X[1,i]-posObs[j].getSFVec3f()[2])**2)
+                    resta = math.sqrt((X[0,i]-posObs[j].getSFVec3f()[1])**2 + (X[1,i]-posObs[j].getSFVec3f()[0])**2)
                     if(abs(resta) < sizeO):
 		  # cambio de posición
                         X[0, i] = random.random()*sizeR0 - sizeR0/2
@@ -156,7 +156,7 @@ for I in range(0,cantI):
       
     # Asignar posiciones revisadas  
     for b in range(0, N):
-        PosTodos[b].setSFVec3f([X[0,b], -6.39203e-05, X[1,b]])
+        PosTodos[b].setSFVec3f([X[0,b], X[1,b], -6.39203e-05])
     
     
     # Posiciones actuales
@@ -201,8 +201,8 @@ for I in range(0,cantI):
         # Obtener posiciones actuales
         for c in range(0,N):
             posC = Agentes[c].getField("translation")
-            posActuales[0][c] = posC.getSFVec3f()[0]
-            posActuales[1][c] = posC.getSFVec3f()[2]        
+            posActuales[0][c] = posC.getSFVec3f()[1]
+            posActuales[1][c] = posC.getSFVec3f()[0]        
 
         
         for g in range(0,N):
@@ -237,8 +237,8 @@ for I in range(0,cantI):
             
             # Collision avoidance con obstáculos
             for j in range(0,cantO):
-                distO0 = posActuales[0,g] - posObs[j].getSFVec3f()[0]
-                distO1 = posActuales[1,g] - posObs[j].getSFVec3f()[2]  
+                distO0 = posActuales[0,g] - posObs[j].getSFVec3f()[1]
+                distO1 = posActuales[1,g] - posObs[j].getSFVec3f()[0]  
                 mdistO = math.sqrt(distO0**2 + distO1**2) - sizeO
 
                 if(abs(mdistO) < 0.0001):
@@ -256,9 +256,9 @@ for I in range(0,cantI):
 			# Movimiento del líder
             if(cambio == 2):
                 errorDist = 0
-                V[0][0] = V[0][0] + 0.2*(posActuales[0][0]-pObjVec[0])
-                V[1][0] = V[1][0] + 0.2*(posActuales[1][0]-pObjVec[2])
-                errorDist = math.sqrt((posActuales[0][0]-pObjVec[0])**2 + (posActuales[1][0]-pObjVec[2])**2)
+                V[0][0] = V[0][0] + 0.2*(posActuales[0][0]-pObjVec[1])
+                V[1][0] = V[1][0] + 0.2*(posActuales[1][0]-pObjVec[0])
+                errorDist = math.sqrt((posActuales[0][0]-pObjVec[1])**2 + (posActuales[1][0]-pObjVec[0])**2)
                
         
        
