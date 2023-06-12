@@ -111,8 +111,8 @@ for I in range(0,cantI):
     
     # Asignar posiciones random a cada agente
     for a in range(0,N):
-        sizeR0 = sizeVec[0] - 2*r
-        sizeR1 = sizeVec[1] - 2*r
+        sizeR0 = sizeVec[1] - 2*r
+        sizeR1 = sizeVec[0] - 2*r
         X[0,a] = random.random()*sizeR0 - sizeR0/2
         X[1,a] = random.random()*sizeR1 - sizeR1/2
     
@@ -156,7 +156,7 @@ for I in range(0,cantI):
       
     # Asignar posiciones revisadas  
     for b in range(0, N):
-        PosTodos[b].setSFVec3f([X[0,b], X[1,b], -6.39203e-05])
+        PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     
     
     # Posiciones actuales

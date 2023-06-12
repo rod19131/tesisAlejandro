@@ -55,11 +55,11 @@ while robot.step(TIME_STEP) != -1:
             V = pickle.load(f)
     
     # Posición nueva/final
-    posFinal = np.asarray([posNuevas[0][argc], posNuevas[1][argc], -6.39203e-05])
+    posFinal = np.asarray([posNuevas[1][argc], posNuevas[0][argc], -6.39203e-05])
     # print("posFinal",posFinal)
     
     # Posición actual
-    posAct = np.asarray([posActuales[0, argc], posActuales[1, argc], -6.39203e-05])
+    posAct = np.asarray([posActuales[1, argc], posActuales[0, argc], -6.39203e-05])
     # print("posAct",posAct)
     
     # Velocidades
