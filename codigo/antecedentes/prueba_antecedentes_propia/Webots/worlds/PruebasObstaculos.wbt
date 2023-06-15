@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3400254626136294 -0.2755197911566862 0.899150448732226 4.959854350359365
-  position -0.2736104871741587 2.6515719046949586 1.6749121708517063
+  orientation -0.40500172969179093 -0.32525220788479603 0.8545083968064463 4.770838472721729
+  position 0.11822026314684697 2.470319414299945 2.2759737499815818
 }
 TexturedBackground {
 }
@@ -87,9 +87,9 @@ DEF OBJ Solid {
   boundingObject USE BALL_SHAPE
 }
 E-puck {
-  translation 0 0 5
+  translation -0.15 0 0.25
   rotation 1 0 0 0
-  controller "Errores2SupervisorObstaculos3"
+  controller "Supervisor3"
   controllerArgs [
     "Robot"
   ]

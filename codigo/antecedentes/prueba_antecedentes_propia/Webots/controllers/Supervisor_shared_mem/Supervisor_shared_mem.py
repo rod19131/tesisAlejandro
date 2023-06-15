@@ -24,7 +24,13 @@ import random
 import math
 import pickle
 from funVel import Fmatrix
+from multiprocessing import shared_memory, Lock
 
+shm1 = shared_memory.SharedMemory(name="my_shared_memory1", create=True, size=1024)
+shm2 = shared_memory.SharedMemory(name="my_shared_memory2", create=True, size=1024)
+shm3 = shared_memory.SharedMemory(name="my_shared_memory3", create=True, size=1024)
+lock = Lock()
+ciclo = 0
 
 TIME_STEP = 64
 # Se crea instancia de supervisor
@@ -37,8 +43,8 @@ sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 
 """ AGENTES """
 N = 10									# cantidad de agentes
-r = 0.1								 	# radio a considerar para evitar colisiones
-R = 1									# rango del radar
+r = 0.35								 	# radio a considerar para evitar colisiones
+R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
 agente0 = supervisor.getFromDef("Agente0")
 agente1 = supervisor.getFromDef("Agente1")
@@ -98,8 +104,8 @@ Xi = X
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
-    PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
-
+    #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+    pass
 
 # Posiciones actuales
 posActuales = np.zeros([2,N])
@@ -136,7 +142,7 @@ while supervisor.step(TIME_STEP) != -1:
                 w = 0
             else:
                 if(cambio == 0): 										# inicio: acercar a los agentes sin chocar
-                    print("collision avoidance")
+                    #print("collision avoidance")
                     w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
                 else:
                     if(dij == 0):										# si no hay arista, se usa función plana como collision avoidance
@@ -160,12 +166,34 @@ while supervisor.step(TIME_STEP) != -1:
         nV2 = V[0][m]**2 + V[1][m]**2
         normV2 = normV2 + nV2
     normV = math.sqrt(normV2)
-    print(normV)
+    print("normV", normV)
     
-    if(normV < 0.5):
+    if(normV < 5 and cambio < 1):
         cambio = cambio + 1
-     
+    
+    lock.acquire()
+    pick_posActuales = pickle.dumps(posActuales)
+    shm1.buf[:len(pick_posActuales)] = pick_posActuales
+    pick_posNuevas = pickle.dumps(posNuevas)
+    shm2.buf[:len(pick_posNuevas)] = pick_posNuevas
+    pick_V = pickle.dumps(V)
+    shm3.buf[:len(pick_V)] = pick_V
+    lock.release()
+    print(ciclo)    
+    ciclo = ciclo + 1 
+       
+    if(ciclo > 1500):
+        shm1.close()
+        shm1.unlink()
+        shm2.close()
+        shm2.unlink()
+        shm3.close()
+        shm3.unlink()
+        break
         
+    
+     
+    """    
     # Guardar datos necesarios para asignar velocidad a cada agente  
     with open('D:/AlejandroDigital/tesisAlejandro/codigo/antecedentes/prueba_antecedentes_propia/Webots/controllers/Datos.pickle','wb') as f:
         pickle.dump(posActuales, f)
@@ -174,6 +202,4 @@ while supervisor.step(TIME_STEP) != -1:
     with open('D:/AlejandroDigital/tesisAlejandro/codigo/antecedentes/prueba_antecedentes_propia/Webots/controllers/Datos3.pickle','wb') as f:
         pickle.dump(V, f)
     pass
-
-
-
+    """

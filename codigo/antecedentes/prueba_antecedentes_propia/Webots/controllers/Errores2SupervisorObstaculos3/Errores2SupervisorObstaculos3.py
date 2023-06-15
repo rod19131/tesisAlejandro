@@ -64,7 +64,7 @@ pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
 N = 10	# cantidad de agentes
-r = 0.1	# radio a considerar para evitar colisiones
+r = 0.45	# radio a considerar para evitar colisiones
 R = 2	# rango del radar
 MAX_SPEED = 6.28	# velocidad máxima
 agente0 = supervisor.getFromDef("Agente0")
@@ -156,7 +156,8 @@ for I in range(0,cantI):
       
     # Asignar posiciones revisadas  
     for b in range(0, N):
-        PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+        #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+        print(X[1,b], X[1,b])
     
     
     # Posiciones actuales
@@ -202,7 +203,8 @@ for I in range(0,cantI):
         for c in range(0,N):
             posC = Agentes[c].getField("translation")
             posActuales[0][c] = posC.getSFVec3f()[1]
-            posActuales[1][c] = posC.getSFVec3f()[0]        
+            posActuales[1][c] = posC.getSFVec3f()[0]
+            #print(posActuales[0][c], posActuales[1][c])        
 
         
         for g in range(0,N):
@@ -320,12 +322,11 @@ for I in range(0,cantI):
         
         pass
         
-    if(errorDist < 0.1 or ciclos >= 3000):
+    if(errorDist < 0.1 or ciclos >= 1500):
         V = np.zeros([2,N])
     with open('D:/AlejandroDigital/tesisAlejandro/codigo/antecedentes/prueba_antecedentes_propia/Webots/controllers/Datos3.pickle','wb') as f:
-        pickle.dump(V, f)
-            
-            
+        pickle.dump(V, f)        
+             
     if(errorDist < 0.1):
         cantMeta = cantMeta + 1
         
