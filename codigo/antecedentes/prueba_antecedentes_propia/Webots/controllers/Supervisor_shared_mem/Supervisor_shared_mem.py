@@ -24,6 +24,7 @@ import random
 import math
 import pickle
 from funVel import Fmatrix
+import funciones
 from multiprocessing import shared_memory, Lock
 
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1", create=True, size=1024)
@@ -43,8 +44,8 @@ sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 
 """ AGENTES """
 N = 10									# cantidad de agentes
-r = 0.35								 	# radio a considerar para evitar colisiones
-R = 4									# rango del radar
+r = 0.49								 	# radio a considerar para evitar colisiones
+R = 1									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
 agente0 = supervisor.getFromDef("Agente0")
 agente1 = supervisor.getFromDef("Agente1")
@@ -78,8 +79,8 @@ X = np.empty([2,N])
 for a in range(0,N):
     sizeR0 = sizeVec[1] - 4*r
     sizeR1 = sizeVec[0] - 4*r
-    X[0,a] = random.random()*sizeR0 - sizeR0/2 - 2*r
-    X[1,a] = random.random()*sizeR1 - sizeR1/2 - 2*r 
+    X[0,a] = random.random()*sizeR0 - sizeR0/2 - 4*r
+    X[1,a] = random.random()*sizeR1 - sizeR1/2 - 4*r 
 print("X",X)
 
 # Revisión de las posiciones    
@@ -99,7 +100,7 @@ while(cW1 > 1 or cW2 > 1):
                     X[1,i+j] = X[1,i+j] + 0.1									# hay intersección
                     contR = contR+1
         cW1 = cW1+1
-
+    
 Xi = X
   
 # Asignar posiciones revisadas  
@@ -168,7 +169,7 @@ while supervisor.step(TIME_STEP) != -1:
     normV = math.sqrt(normV2)
     print("normV", normV)
     
-    if(normV < 5 and cambio < 1):
+    if(normV < 3 and cambio < 1):
         cambio = cambio + 1
     
     lock.acquire()
@@ -181,14 +182,27 @@ while supervisor.step(TIME_STEP) != -1:
     lock.release()
     print(ciclo)    
     ciclo = ciclo + 1 
+    
+    if (supervisor.step(TIME_STEP) == -1):
+        shm1.close()
+        #shm1.unlink()
+        shm2.close()
+        #shm2.unlink()
+        shm3.close()
+        break
        
     if(ciclo > 1500):
+        #lock.acquire()
         shm1.close()
-        shm1.unlink()
+        #shm1.unlink()
         shm2.close()
-        shm2.unlink()
+        #shm2.unlink()
         shm3.close()
-        shm3.unlink()
+        #shm3.unlink()
+        #del shm1
+        #del shm2
+        #del shm3
+        #lock.release()
         break
         
     

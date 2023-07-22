@@ -20,11 +20,11 @@ import pickle
 from multiprocessing import shared_memory, Lock
 TIME_STEP = 64
 MAX_SPEED = 6.28
-
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 shm3 = shared_memory.SharedMemory(name="my_shared_memory3")
 lock = Lock()
+
 # Dimensiones robot
 r = 0.0205
 l = 0.0355
