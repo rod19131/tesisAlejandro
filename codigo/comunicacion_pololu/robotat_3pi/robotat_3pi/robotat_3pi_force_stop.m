@@ -10,5 +10,5 @@ function robotat_3pi_force_stop(robot)
     cbormsg(7) = 250; % FA = single-precision float
     cbormsg(8:11) = fliplr(typecast(single(dphiR), 'uint8'));
     
-    write(robot.tcpsock, cbormsg);
+    write(robot.tcpsock, cbormsg);I
 end

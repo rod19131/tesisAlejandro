@@ -77,10 +77,8 @@ X = np.empty([2,N])
 
 # Asignar posiciones random a cada agente
 for a in range(0,N):
-    sizeR0 = sizeVec[1] - 4*r
-    sizeR1 = sizeVec[0] - 4*r
-    X[0,a] = random.random()*sizeR0 - sizeR0/2 - 4*r
-    X[1,a] = random.random()*sizeR1 - sizeR1/2 - 4*r 
+    X[0,a] = random.uniform(sizeVec[1]/2-0.1,-sizeVec[1]/2+0.1) #0.1 para que el carro no esté pegado a la pared
+    X[1,a] = random.uniform(sizeVec[0]/2-0.1,-sizeVec[0]/2+0.1)
 print("X",X)
 
 # Revisión de las posiciones    
@@ -96,8 +94,8 @@ while(cW1 > 1 or cW2 > 1):
             for j in range(1, N-i):
                 resta = math.sqrt((X[0,i]-X[0,i+j])**2+(X[1,i]-X[1,i+j])**2)	# diferencia entre las posiciones
                 if(abs(resta) < r):
-                    X[0,i+j] = X[0,i+j] + 0.1									# cambio de posición
-                    X[1,i+j] = X[1,i+j] + 0.1									# hay intersección
+                    X[0,i+j] = random.uniform(sizeVec[1]/2-0.1,-sizeVec[1]/2+0.1)
+                    X[1,i+j] = random.uniform(sizeVec[0]/2-0.1,-sizeVec[0]/2+0.1)									# hay intersección
                     contR = contR+1
         cW1 = cW1+1
     
@@ -105,7 +103,7 @@ Xi = X
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
-    #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+    PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     pass
 
 # Posiciones actuales
