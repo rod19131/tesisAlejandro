@@ -42,6 +42,25 @@ arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
 sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 
+""" OBSTACULOS """
+cantO = 3												# cantidad de obstáculos
+obs1 = supervisor.getFromDef("Obs1")
+obs2 = supervisor.getFromDef("Obs2")
+obs3 = supervisor.getFromDef("Obs3")
+Obstaculos = [obs1, obs2, obs3]
+sizeO = 2.5*obs1.getField("majorRadius").getSFFloat()	# tamaño del obstáculo
+
+## Posiciones de los agentes ##
+posO1 = obs1.getField("translation")
+posO2 = obs2.getField("translation")
+posO3 = obs3.getField("translation")
+posObs = [posO1, posO2, posO3]
+
+""" Objetivo """
+objetivo = supervisor.getFromDef("OBJ")
+pObj = objetivo.getField("translation")
+pObjVec = pObj.getSFVec3f()
+
 """ AGENTES """
 N = 10									# cantidad de agentes
 r = 0.49								 	# radio a considerar para evitar colisiones
@@ -99,11 +118,25 @@ while(cW1 > 1 or cW2 > 1):
                     contR = contR+1
         cW1 = cW1+1
     
+    contRO = 1			# contador de intersecciones con obstáculos
+    while(contRO > 0):
+        contRO = 0
+        for i in range(1,N):
+            for j in range(1,cantO):
+				# distancia agente obstáculo
+                resta = math.sqrt((X[0,i]-posObs[j].getSFVec3f()[1])**2 + (X[1,i]-posObs[j].getSFVec3f()[0])**2)	
+                if(abs(resta) < sizeO):
+					# cambio de posición
+                    X[0,i] = X[0,i] + sizeO + r
+                    X[1,i] = X[1,i] + sizeO + r
+                    contRO = contRO + 1			# hay intersección
+        cW2 = cW2 + 1        
+
 Xi = X
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
-    PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+    #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     pass
 
 # Posiciones actuales
@@ -158,7 +191,7 @@ while supervisor.step(TIME_STEP) != -1:
         # Actualización de velocidad
         V[0][g] = 2*(E0)*TIME_STEP/1000 
         V[1][g] = 2*(E1)*TIME_STEP/1000 
-    
+
 	# Al llegar muy cerca de la posición deseada realizar cambio de control
     normV2 = 0
     for m in range(0,N):
@@ -169,7 +202,9 @@ while supervisor.step(TIME_STEP) != -1:
     
     if(normV < 3 and cambio < 1):
         cambio = cambio + 1
-    
+    if (ciclo > 350):
+        V[0][4] = V[0][0] - (posActuales[0][0]-pObjVec[1])
+        V[1][4] = V[1][0] - (posActuales[1][0]-pObjVec[0])
     lock.acquire()
     pick_posActuales = pickle.dumps(posActuales)
     shm1.buf[:len(pick_posActuales)] = pick_posActuales
@@ -189,7 +224,7 @@ while supervisor.step(TIME_STEP) != -1:
         shm3.close()
         break
        
-    if(ciclo > 1500):
+    if(ciclo > 3000):
         #lock.acquire()
         shm1.close()
         #shm1.unlink()

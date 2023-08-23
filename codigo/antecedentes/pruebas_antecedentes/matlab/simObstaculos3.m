@@ -192,6 +192,8 @@ while(t < T)
         cambio = cambio + 1;
     end
     % Actualización de la posición de los agentes
+    cambio
+    norm(V)
     X = X + V*dt;
     
     % Almacenamiento de variables para graficar
