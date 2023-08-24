@@ -33,7 +33,7 @@ def robotat_get_pose(tcp_obj, agents_ids, rotrep):
             else:
                 try:
                     rotation = R.from_quat([data[3:] for data in mocap_data])
-                    euler_angles = rotation.as_euler(rotrep)
+                    euler_angles = rotation.as_euler(rotrep,degrees=True) # el angulo se da en mayúsculas i.e. "XYZ"
                     mocap_data = [
                         mocap_data[i][:3] + list(euler_angles[i]) for i in range(len(mocap_data))
                     ]

@@ -63,8 +63,8 @@ pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
 N = 10									# cantidad de agentes
-r = 0.49								 	# radio a considerar para evitar colisiones
-R = 1									# rango del radar
+r = 0.1								 	# radio a considerar para evitar colisiones
+R = 2									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
 agente0 = supervisor.getFromDef("Agente0")
 agente1 = supervisor.getFromDef("Agente1")
@@ -126,9 +126,9 @@ while(cW1 > 1 or cW2 > 1):
 				# distancia agente obstáculo
                 resta = math.sqrt((X[0,i]-posObs[j].getSFVec3f()[1])**2 + (X[1,i]-posObs[j].getSFVec3f()[0])**2)	
                 if(abs(resta) < sizeO):
-					# cambio de posición
-                    X[0,i] = X[0,i] + sizeO + r
-                    X[1,i] = X[1,i] + sizeO + r
+	         # cambio de posición
+                    X[0,i+j] = random.uniform(sizeVec[1]/2-0.1,-sizeVec[1]/2+0.1)
+                    X[1,i+j] = random.uniform(sizeVec[0]/2-0.1,-sizeVec[0]/2+0.1)
                     contRO = contRO + 1			# hay intersección
         cW2 = cW2 + 1        
 
@@ -136,7 +136,7 @@ Xi = X
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
-    #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+    PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     pass
 
 # Posiciones actuales
@@ -147,7 +147,7 @@ posNuevas = np.zeros([2,N])
 V = np.empty([2,N])
 
 # Matriz de formación
-d = Fmatrix(1,8)
+d = Fmatrix(2,1)
 print(d)
 
 # Main loop:
@@ -179,18 +179,29 @@ while supervisor.step(TIME_STEP) != -1:
                 else:
                     if(dij == 0):										# si no hay arista, se usa función plana como collision avoidance
                         print("cosh")
-                        w = 0.018*math.sinh(1.8*mdist-8.4)/mdist 		
+                        w = 0.15*math.sinh(15*mdist-6)/mdist 		
                     else:												# collision avoidance & formation control
                         print("formacion")
                         w = (4*(mdist - dij)*(mdist - r) - 2*(mdist - dij)**2)/(mdist*(mdist - r)**2)
                 
             # Tensión de aristas entre agentes 
-            E0 = E0 + w*dist[0]
-            E1 = E1 + w*dist[1]
-            
+            E0 = E0 + 2*w*dist[0]
+            E1 = E1 + 2*w*dist[1]
+        # Collision avoidance con obstáculos
+        for j in range(0,cantO):
+            distO0 = posActuales[0,g] - posObs[j].getSFVec3f()[1]
+            distO1 = posActuales[1,g] - posObs[j].getSFVec3f()[0]  
+            mdistO = math.sqrt(distO0**2 + distO1**2) - sizeO
+
+            if(abs(mdistO) < 0.0001):
+                mdistO = 0.0001
+            w = -1/(mdistO**2)
+
+            E0 = E0 + 0.1*w*distO0
+            E1 = E1 + 0.1*w*distO1    
         # Actualización de velocidad
-        V[0][g] = 2*(E0)*TIME_STEP/1000 
-        V[1][g] = 2*(E1)*TIME_STEP/1000 
+        V[0][g] = -1*(E0)*TIME_STEP/1000 
+        V[1][g] = -1*(E1)*TIME_STEP/1000 
 
 	# Al llegar muy cerca de la posición deseada realizar cambio de control
     normV2 = 0
