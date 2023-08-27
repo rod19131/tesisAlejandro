@@ -7,8 +7,8 @@ if (prueba == 1):
 while(prueba==1):
     disconnect = int(input("desconectar?"))
     if disconnect == 0:
-        #pose = robotat_get_pose(robotat, 1, "XYZ")
-        #print(pose)
+        pose = robotat_get_pose(robotat, [1], "XYZ")
+        print(pose)
         robotat_disconnect(robotat)
         prueba = 0
 print("desconectado")

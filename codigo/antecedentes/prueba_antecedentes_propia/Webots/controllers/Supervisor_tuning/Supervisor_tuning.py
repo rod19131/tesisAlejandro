@@ -214,8 +214,8 @@ while supervisor.step(TIME_STEP) != -1:
     if(normV < 3 and cambio < 1):
         cambio = cambio + 1
     if (ciclo > 400):
-        V[0][0] = V[0][0] - (posActuales[0][0]-pObjVec[1])
-        V[1][0] = V[1][0] - (posActuales[1][0]-pObjVec[0])
+        V[0][4] = V[0][0] - (posActuales[0][0]-pObjVec[1])
+        V[1][4] = V[1][0] - (posActuales[1][0]-pObjVec[0])
     lock.acquire()
     pick_posActuales = pickle.dumps(posActuales)
     shm1.buf[:len(pick_posActuales)] = pick_posActuales
