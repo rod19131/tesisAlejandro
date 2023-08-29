@@ -32,11 +32,13 @@ shm2 = shared_memory.SharedMemory(name="my_shared_memory2", create=True, size=10
 shm3 = shared_memory.SharedMemory(name="my_shared_memory3", create=True, size=1024)
 lock = Lock()
 ciclo = 0
-
+  
 TIME_STEP = 64
 # Se crea instancia de supervisor
 supervisor = Supervisor()
 
+with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
+    setup_pos = pickle.load(f)
 """ ARENA """
 arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
@@ -137,6 +139,7 @@ Xi = X
 # Asignar posiciones revisadas  
 for b in range(0, N):
     PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+    #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     pass
 
 # Posiciones actuales
@@ -214,8 +217,8 @@ while supervisor.step(TIME_STEP) != -1:
     if(normV < 3 and cambio < 1):
         cambio = cambio + 1
     if (ciclo > 400):
-        V[0][4] = V[0][0] - (posActuales[0][0]-pObjVec[1])
-        V[1][4] = V[1][0] - (posActuales[1][0]-pObjVec[0])
+        V[0][0] = V[0][0] - (posActuales[0][0]-pObjVec[1])
+        V[1][0] = V[1][0] - (posActuales[1][0]-pObjVec[0])
     lock.acquire()
     pick_posActuales = pickle.dumps(posActuales)
     shm1.buf[:len(pick_posActuales)] = pick_posActuales

@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation as R
  
 def robotat_get_pose(tcp_obj, agents_ids, rotrep):
     timeout_count = 0
-    timeout_in100ms = 1 / 0.1
+    timeout_in100ms = 100
 
     tcp_obj.recv(1024)  # Clear any existing data
 
