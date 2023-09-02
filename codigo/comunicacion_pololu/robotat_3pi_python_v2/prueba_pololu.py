@@ -1,11 +1,8 @@
 import time
-from robotat_3pi_connect import *
-from robotat_3pi_disconnect import *
-from robotat_3pi_set_wheel_velocities import *
-from robotat_3pi_force_stop import *
+from funciones_conjunto_3pi import *
 try:
-    robot = robotat_3pi_connect(2)
-    robot2 = robotat_3pi_connect(3)
+    robot = robotat_3pi_connect(1)
+    robot2 = robotat_3pi_connect(2)
     print(f"Connected to robot ID: {robot['id']}, IP: {robot['ip']}, Port: {robot['port']}")
     print(f"Connected to robot ID: {robot2['id']}, IP: {robot2['ip']}, Port: {robot2['port']}")
     robotat_3pi_set_wheel_velocities(robot, -50, 50)
@@ -20,4 +17,5 @@ except Exception as e:
 finally:
     robotat_3pi_disconnect(robot)
     robotat_3pi_disconnect(robot2)
+
     

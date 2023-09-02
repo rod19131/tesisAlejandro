@@ -2,6 +2,7 @@ import socket
 import json
 import time
 from scipy.spatial.transform import Rotation as R
+import numpy as np
 
 def robotat_connect():
     ip = '192.168.50.200'
@@ -25,7 +26,10 @@ def robotat_disconnect(tcp_obj):
 def robotat_get_pose(tcp_obj, agent_id):
     try:
         # Clear any existing data
-        tcp_obj.recv(1024)
+        #probar
+        tcp_obj.recv(4096)
+        #tcp_obj.recv(2048)
+        #tcp_obj.recv(1024)
 
         # Prepare the request payload
         request_payload = {
@@ -43,7 +47,10 @@ def robotat_get_pose(tcp_obj, agent_id):
         # Decode and process the response
         if response_data:
             pose_data = json.loads(response_data)
-            return pose_data
+            #new experiment
+            n = len(agent_id)
+            pose = np.array(pose_data).reshape(n,7)
+            return pose
         else:
             print("Received empty response from server.")
             return None

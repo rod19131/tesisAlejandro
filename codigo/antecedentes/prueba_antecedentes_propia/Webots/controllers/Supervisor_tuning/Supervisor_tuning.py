@@ -141,7 +141,7 @@ for b in range(0, N):
     PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     pass
-"""   
+"""    
 for obstacle in range(0, len(posObs)):
     posObs[obstacle].setSFVec3f([setup_pos[obstacle+10,0], setup_pos[obstacle+10,1], -6.39203e-05])
     
