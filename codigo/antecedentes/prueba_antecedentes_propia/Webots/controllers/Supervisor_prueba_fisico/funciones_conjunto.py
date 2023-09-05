@@ -57,39 +57,3 @@ def robotat_get_pose(tcp_obj, agent_id):
     except Exception as e:
         print("An error occurred:", e)
         return None
-"""
-def quaternion_to_euler(position_quaternion_list, euler_angles):
-    # Extract position and quaternion components
-    position = position_quaternion_list[:3]
-    quaternion = position_quaternion_list[3:]
-    quaternion_eq = quaternion[1:] + [quaternion[0]]
-    print(quaternion_eq)
-    # Convert quaternion to Euler angles
-    r = R.from_quat(quaternion_eq)  # Create a Rotation object from the quaternion
-    euler_angles = r.as_euler(euler_angles, degrees=True)  # Convert to Euler angles in degrees
-
-    # Create a new list with position and Euler angles
-    new_list = position + list(euler_angles)
-
-    return new_list
-"""
-
-def quat2eul(position_quaternion_array, euler_angles_order):
-    # Ensure the input is a NumPy array
-    position_quaternion_array = np.array(position_quaternion_array)
-
-    # Extract position and quaternion components for all rows
-    positions = position_quaternion_array[:, :3]
-    quaternions = position_quaternion_array[:, 3:]
-
-    # Roll the quaternions to change their order
-    quaternions_eq = np.roll(quaternions, -1, axis=1)
-
-    # Convert quaternions to Euler angles for all rows
-    rotations = R.from_quat(quaternions_eq)
-    euler_angles = rotations.as_euler(euler_angles_order, degrees=True)
-
-    # Create a new array with positions and Euler angles
-    new_array = np.hstack((positions, euler_angles))
-
-    return new_array

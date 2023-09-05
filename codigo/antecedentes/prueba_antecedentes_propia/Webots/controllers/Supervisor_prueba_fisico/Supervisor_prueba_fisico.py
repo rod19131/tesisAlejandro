@@ -1,4 +1,4 @@
-"""Supervisor_fisico_prueba controller."""
+"""Supervisor_prueba_fisico controller."""
 
 # You may need to import some classes of the controller module. Ex:
 #  from controller import Robot, Motor, DistanceSensor

@@ -9,12 +9,16 @@ else:
     print("error")
 try:
     print(robotat)
-    agentes = [1,2]
+    agentes = [1,2,3,4,5,6,7,8,9,10,11,13,14,16,17,18]
     n = len(agentes)
     print("Number of agents:\n",n)
-    #disconnect = int(input("desconectar?"))
+    disconnect = int(input("desconectar?"))
     pose = robotat_get_pose(robotat, agentes)
     print("Pose per agent\n:", pose)
+   # eul = quaternion_to_euler(list(pose[0]),'xyz')
+
+    #print(pose[0])
+    #print(eul)
     """
     print(type(pose))
     print("all agent poses:\n", pose)
@@ -27,10 +31,9 @@ except:
     pass
 finally:
     robotat_disconnect(robotat)
-    """
-    with open('first_setup.pickle', 'wb') as f:
-        pickle.dump(pose_por_agente, f)
+"""
+    with open('markers_alineados.pickle', 'wb') as f:
         pickle.dump(pose, f)
-    """
 
+"""
     

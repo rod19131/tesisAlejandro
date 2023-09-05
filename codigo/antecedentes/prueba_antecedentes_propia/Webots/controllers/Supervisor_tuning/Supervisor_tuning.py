@@ -26,6 +26,7 @@ import pickle
 from funVel import Fmatrix
 import funciones
 from multiprocessing import shared_memory, Lock
+from funciones_conjunto import *
 
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1", create=True, size=1024)
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2", create=True, size=1024)
@@ -39,11 +40,25 @@ supervisor = Supervisor()
 
 with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
     setup_pos = pickle.load(f)
+    """
+    robotat = robotat_connect()
+    if robotat:
+        print(robotat)
+        agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+        n_ag = len(agentes)
+        print("Number of agents:\n",n_ag)
+        pose = robotat_get_pose(robotat, agentes)
+        robotat_disconnect(robotat)
+        print("robotat disconnected")
+    else:
+        print("error")
+    """
 """ ARENA """
 arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
 sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 
+#setup_pos = pose
 """ OBSTACULOS """
 cantO = 3												# cantidad de obstáculos
 obs1 = supervisor.getFromDef("Obs1")
