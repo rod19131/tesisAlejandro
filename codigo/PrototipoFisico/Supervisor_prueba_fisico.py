@@ -41,26 +41,20 @@ supervisor = Supervisor()
 with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
     setup_pos = pickle.load(f)
 """
-#setup_pos = np.load('../first_setup.npy')
-def update_data():
-    try: 
-        robotat = robotat_connect()
-        if robotat:
-            print(robotat)
-            agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-            n_ag = len(agentes)
-            print("Number of agents:\n",n_ag)
-            pose = robotat_get_pose(robotat, agentes)
-        else:
-            print("error")
-    except:
-        print("error")
-    finally:
+setup_pos = np.load('../first_setup.npy')
+"""
+    robotat = robotat_connect()
+    if robotat:
+        print(robotat)
+        agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+        n_ag = len(agentes)
+        print("Number of agents:\n",n_ag)
+        pose = robotat_get_pose(robotat, agentes)
         robotat_disconnect(robotat)
-        pose_eul = quat2eul(pose,'zyx')
-        return n_ag, pose_eul
-
-n_agents,agents_pose = update_data()
+        print("robotat disconnected")
+    else:
+        print("error")
+    """
 """ ARENA """
 arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
@@ -89,7 +83,7 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 """
 """ AGENTES """
-N = 10									# cantidad de agentes
+N = 1									# cantidad de agentes
 r = 0.1								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -117,6 +111,7 @@ for i in range(0, N):
     PosTodos.append(agent_pos)
  
 X = np.empty([2,N])
+
 # Asignar posiciones random a cada agente
 for a in range(0,N):
     X[0,a] = random.uniform(sizeVec[1]/2-0.1,-sizeVec[1]/2+0.1) #0.1 para que el carro no esté pegado a la pared
@@ -157,7 +152,7 @@ while(cW1 > 1 or cW2 > 1):
 
 Xi = X
 
-agent_setup = 1
+agent_setup = 3
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
