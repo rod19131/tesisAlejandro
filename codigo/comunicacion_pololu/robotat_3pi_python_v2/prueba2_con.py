@@ -9,7 +9,7 @@ else:
     print("error")
 try:
     print(robotat)
-    agentes = [1,2,3,4,5,6,7,8,9,10,11,13,14,16,17,18]
+    agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     n = len(agentes)
     print("Number of agents:\n",n)
     disconnect = int(input("desconectar?"))
@@ -31,9 +31,8 @@ except:
     pass
 finally:
     robotat_disconnect(robotat)
-"""
-    with open('markers_alineados.pickle', 'wb') as f:
+    """
+    with open('markers_alineados_zyx2.pickle', 'wb') as f:
         pickle.dump(pose, f)
 
-"""
-    
+    """
