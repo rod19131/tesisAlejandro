@@ -37,10 +37,10 @@ ciclo = 0
 TIME_STEP = 64
 # Se crea instancia de supervisor
 supervisor = Supervisor()
-"""      
+     
 with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
     setup_pos = pickle.load(f)
-""" 
+ 
 """
     robotat = robotat_connect()
     if robotat:
@@ -72,35 +72,8 @@ for i in range(0, cantO):
     Obstaculos.append(obstacle)
     posObs.append(pos_obstacle)
 
-sizeO = 2.5*Obstaculos[0].getField("majorRadius").getSFFloat()
-print(Obstaculos)
-"""
-cantO = 3												# cantidad de obstáculos
-obs1 = supervisor.getFromDef("Obs1")
-obs2 = supervisor.getFromDef("Obs2")
-obs3 = supervisor.getFromDef("Obs3")
-Obstaculos = [obs1, obs2, obs3]
-sizeO = 2.5*obs1.getField("majorRadius").getSFFloat()	# tamaño del obstáculo
-## Posiciones de los agentes ##
-posO1 = obs1.getField("translation")
-posO2 = obs2.getField("translation")
-posO3 = obs3.getField("translation")
-posObs = [posO1, posO2, posO3]
-"""
-"""Objetivo Inicial"""
-N = 10
-initialPositions = []
-posIniPos = []
-posIniPosVec = []
-
-for i in range(0, N):
-    inipos_name = f"IniPos{i}"
-    inipos = supervisor.getFromDef(inipos_name)
-    inipos_pos = inipos.getField("translation")
-    inipos_pos_vec = inipos_pos.getSFVec3f()
-    initialPositions.append(inipos)
-    posIniPos.append(inipos_pos)
-    posIniPosVec.append(inipos_pos_vec)
+sizeO = 2.5*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
+#print(Obstaculos)
 
 """ Objetivo """
 """
@@ -113,32 +86,29 @@ N = 10									# cantidad de agentes
 r = 0.1								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
-agente0 = supervisor.getFromDef("Agente0")
-agente1 = supervisor.getFromDef("Agente1")
-agente2 = supervisor.getFromDef("Agente2")
-agente3 = supervisor.getFromDef("Agente3")
-agente4 = supervisor.getFromDef("Agente4")
-agente5 = supervisor.getFromDef("Agente5")
-agente6 = supervisor.getFromDef("Agente6")
-agente7 = supervisor.getFromDef("Agente7")
-agente8 = supervisor.getFromDef("Agente8")
-agente9 = supervisor.getFromDef("Agente9")
 
-Agentes = [agente0, agente1, agente2, agente3, agente4, agente5, agente6, agente7, agente8, agente9]
+Agents = []
+PosTodos = []
 
-## Posiciones de los agentes ##
-pos0 = agente0.getField("translation")
-pos1 = agente1.getField("translation")
-pos2 = agente2.getField("translation")
-pos3 = agente3.getField("translation")
-pos4 = agente4.getField("translation")
-pos5 = agente5.getField("translation")
-pos6 = agente6.getField("translation")
-pos7 = agente7.getField("translation")
-pos8 = agente8.getField("translation")
-pos9 = agente9.getField("translation")
+initialPositions = []
+posIniPos = []
+posIniPosVec = []
 
-PosTodos = [pos0, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, pos9]
+
+for i in range(0, N):
+    inipos_name = f"IniPos{i}"
+    inipos = supervisor.getFromDef(inipos_name)
+    inipos_pos = inipos.getField("translation")
+    inipos_pos_vec = inipos_pos.getSFVec3f()
+    initialPositions.append(inipos)
+    posIniPos.append(inipos_pos)
+    posIniPosVec.append(inipos_pos_vec)
+    agent_name = f"Agent{i}"
+    agent = supervisor.getFromDef(agent_name)
+    agent_pos = agent.getField("translation")
+    Agents.append(agent)
+    PosTodos.append(agent_pos)
+ 
 X = np.empty([2,N])
 
 # Asignar posiciones random a cada agente
@@ -180,52 +150,28 @@ while(cW1 > 1 or cW2 > 1):
         cW2 = cW2 + 1        
 
 Xi = X
+
+agent_setup = 0
   
 # Asignar posiciones revisadas  
 for b in range(0, N):
+    if (agent_setup == 1): # random agent position spawn
+        PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+        
+    elif (agent_setup == 2): # random initial position markers spawn
+        posIniPos[b].setSFVec3f([X[1,b], X[0,b], 0.3])
+        inipos_pos_vec = posIniPos[i].getSFVec3f()
+        posIniPosVec.append(inipos_pos_vec)
+                
+    elif (agent_setup == 3): # instant agent position based on saved setup
+        PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
+
     #pObjs[b].setSFVec3f([X[1,b], X[0,b], 0.3])
     #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     pass
-""" Objetivo Inicial"""
-"""
-objetivo0 = supervisor.getFromDef("inicioOBJ")
-objetivo1 = supervisor.getFromDef("inicioOBJ1")
-objetivo2 = supervisor.getFromDef("inicioOBJ2")
-objetivo3 = supervisor.getFromDef("inicioOBJ3")
-objetivo4 = supervisor.getFromDef("inicioOBJ4")
-objetivo5 = supervisor.getFromDef("inicioOBJ5")
-objetivo6 = supervisor.getFromDef("inicioOBJ6")
-objetivo7 = supervisor.getFromDef("inicioOBJ7")
-objetivo8 = supervisor.getFromDef("inicioOBJ8")
-objetivo9 = supervisor.getFromDef("inicioOBJ9")
-
-objetivos = [objetivo0, objetivo1, objetivo2, objetivo3, objetivo4, objetivo5, objetivo6, objetivo7, objetivo8, objetivo9]
-pObj0 = objetivos[0].getField("translation")
-pObj1 = objetivos[1].getField("translation")
-pObj2 = objetivos[2].getField("translation")
-pObj3 = objetivos[3].getField("translation")
-pObj4 = objetivos[4].getField("translation")
-pObj5 = objetivos[5].getField("translation")
-pObj6 = objetivos[6].getField("translation")
-pObj7 = objetivos[7].getField("translation")
-pObj8 = objetivos[8].getField("translation")
-pObj9 = objetivos[9].getField("translation")
-
-pObjs = [pObj0, pObj1, pObj2, pObj3, pObj4, pObj5, pObj6, pObj7, pObj8, pObj9]
-
-pObjVec0 = pObjs[0].getSFVec3f()
-pObjVec1 = pObjs[1].getSFVec3f()
-pObjVec2 = pObjs[2].getSFVec3f()
-pObjVec3 = pObjs[3].getSFVec3f()
-pObjVec4 = pObjs[4].getSFVec3f()
-pObjVec5 = pObjs[5].getSFVec3f()
-pObjVec6 = pObjs[6].getSFVec3f()
-pObjVec7 = pObjs[7].getSFVec3f()
-pObjVec8 = pObjs[8].getSFVec3f()
-pObjVec9 = pObjs[9].getSFVec3f()
-pObjsVecs = [pObjVec0,pObjVec1,pObjVec2,pObjVec3,pObjVec4,pObjVec5,pObjVec6,pObjVec7,pObjVec8,pObjVec9]
-"""
+    
+    
 """    
 for obstacle in range(0, len(posObs)):
     posObs[obstacle].setSFVec3f([setup_pos[obstacle+10,0], setup_pos[obstacle+10,1], -6.39203e-05])
@@ -251,7 +197,7 @@ while supervisor.step(TIME_STEP) != -1:
 	
 	# Se obtienen posiciones actuales
     for c in range(0,N):
-        posC = Agentes[c].getField("translation")
+        posC = Agents[c].getField("translation")
         posActuales[0][c] = posC.getSFVec3f()[1]
         posActuales[1][c] = posC.getSFVec3f()[0]        
     

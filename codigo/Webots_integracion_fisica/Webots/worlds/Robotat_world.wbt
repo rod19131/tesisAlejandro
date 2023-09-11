@@ -20,7 +20,7 @@ DEF Arena RectangleArena {
   floorSize 3.8 4.8
   floorTileSize 2 2
 }
-DEF Obs1 SolidTorus {
+DEF Obs0 SolidTorus {
   translation -0.141 0 0
   majorRadius 0.07
   minorRadius 0.1
@@ -35,7 +35,7 @@ DEF Obs1 SolidTorus {
     metalness 0
   }
 }
-DEF Obs2 SolidTorus {
+DEF Obs1 SolidTorus {
   translation -0.5 0.75 0
   name "torus(1)"
   majorRadius 0.07
@@ -51,7 +51,7 @@ DEF Obs2 SolidTorus {
     metalness 0
   }
 }
-DEF Obs3 SolidTorus {
+DEF Obs2 SolidTorus {
   translation -0.75 -0.5 0
   name "torus(2)"
   majorRadius 0.07
@@ -67,7 +67,7 @@ DEF Obs3 SolidTorus {
     metalness 0
   }
 }
-DEF OBJ Solid {
+DEF IniPos0 Solid {
   translation -1.5 0 0.3
   rotation 0 1 0 0
   children [
@@ -86,7 +86,7 @@ DEF OBJ Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ1 Solid {
+DEF IniPos1 Solid {
   translation -1.5 0.3 0.3
   rotation 0 1 0 0
   children [
@@ -105,7 +105,7 @@ DEF inicioOBJ1 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ2 Solid {
+DEF IniPos2 Solid {
   translation -1.5 0.6 0.3
   rotation 0 1 0 0
   children [
@@ -124,7 +124,7 @@ DEF inicioOBJ2 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ3 Solid {
+DEF IniPos3 Solid {
   translation -1.5 0.9 0.3
   rotation 0 1 0 0
   children [
@@ -143,7 +143,7 @@ DEF inicioOBJ3 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ4 Solid {
+DEF IniPos4 Solid {
   translation -1.5 1.2 0.3
   rotation 0 1 0 0
   children [
@@ -162,7 +162,7 @@ DEF inicioOBJ4 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ5 Solid {
+DEF IniPos5 Solid {
   translation -1.5 1.5 0.3
   rotation 0 1 0 0
   children [
@@ -181,7 +181,7 @@ DEF inicioOBJ5 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ6 Solid {
+DEF IniPos6 Solid {
   translation -1.5 1.8 0.3
   rotation 0 1 0 0
   children [
@@ -200,7 +200,7 @@ DEF inicioOBJ6 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ7 Solid {
+DEF IniPos7 Solid {
   translation -1.5 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -219,7 +219,7 @@ DEF inicioOBJ7 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ8 Solid {
+DEF IniPos8 Solid {
   translation -1.2 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -238,7 +238,7 @@ DEF inicioOBJ8 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF inicioOBJ9 Solid {
+DEF IniPos9 Solid {
   translation -0.9 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -266,7 +266,7 @@ E-puck {
   ]
   supervisor TRUE
 }
-DEF Agente0 E-puck {
+DEF Agent0 E-puck {
   translation 0.11 0 0
   name "Agente0"
   controller "pruebaMatrizDifeomorfismo"
@@ -283,7 +283,7 @@ DEF Agente0 E-puck {
     }
   ]
 }
-DEF Agente1 E-puck {
+DEF Agent1 E-puck {
   translation 0.28 0 0
   name "Agente1"
   controller "pruebaMatrizDifeomorfismo"
@@ -300,7 +300,7 @@ DEF Agente1 E-puck {
     }
   ]
 }
-DEF Agente2 E-puck {
+DEF Agent2 E-puck {
   translation 0.48 0 0
   name "Agente2"
   controller "pruebaMatrizDifeomorfismo"
@@ -317,7 +317,7 @@ DEF Agente2 E-puck {
     }
   ]
 }
-DEF Agente3 E-puck {
+DEF Agent3 E-puck {
   translation 0.66 0 0
   name "Agente3"
   controller "pruebaMatrizDifeomorfismo"
@@ -334,7 +334,7 @@ DEF Agente3 E-puck {
     }
   ]
 }
-DEF Agente4 E-puck {
+DEF Agent4 E-puck {
   translation 0.87 0 0
   name "Agente4"
   controller "pruebaMatrizDifeomorfismo"
@@ -351,7 +351,7 @@ DEF Agente4 E-puck {
     }
   ]
 }
-DEF Agente5 E-puck {
+DEF Agent5 E-puck {
   translation 1.04 0 0
   name "Agente5"
   controller "pruebaMatrizDifeomorfismo"
@@ -368,7 +368,7 @@ DEF Agente5 E-puck {
     }
   ]
 }
-DEF Agente6 E-puck {
+DEF Agent6 E-puck {
   translation 1.21 0 0
   name "Agente6"
   controller "pruebaMatrizDifeomorfismo"
@@ -385,7 +385,7 @@ DEF Agente6 E-puck {
     }
   ]
 }
-DEF Agente7 E-puck {
+DEF Agent7 E-puck {
   translation 1.37 0 0
   name "Agente7"
   controller "pruebaMatrizDifeomorfismo"
@@ -402,7 +402,7 @@ DEF Agente7 E-puck {
     }
   ]
 }
-DEF Agente8 E-puck {
+DEF Agent8 E-puck {
   translation 1.53 0 0
   name "Agente8"
   controller "pruebaMatrizDifeomorfismo"
@@ -419,7 +419,7 @@ DEF Agente8 E-puck {
     }
   ]
 }
-DEF Agente9 E-puck {
+DEF Agent9 E-puck {
   translation 1.7 0 0
   name "Agente9"
   controller "pruebaMatrizDifeomorfismo"
