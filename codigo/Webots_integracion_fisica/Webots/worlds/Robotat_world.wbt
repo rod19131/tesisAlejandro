@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3637402105947008 -0.36127611521342484 -0.8585875772294977 4.2058403582060055
-  position 2.18282864314186 -3.1175397131096205 4.550824607265511
+  orientation 0.3545349639209045 -0.3300264596454653 -0.8748642724968732 4.150311606725395
+  position 2.563938995202922 -2.9811891020145405 4.335051784784495
 }
 TexturedBackground {
 }
@@ -260,7 +260,7 @@ DEF IniPos9 Solid {
 E-puck {
   translation -0.15 0 0.25
   rotation 1 0 0 0
-  controller "Supervisor_prueba_fisico"
+  controller "Supervisor_solo_fisico"
   controllerArgs [
     "Robot"
   ]

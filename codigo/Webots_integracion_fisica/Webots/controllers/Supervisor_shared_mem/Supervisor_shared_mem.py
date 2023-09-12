@@ -33,7 +33,7 @@ shm3 = shared_memory.SharedMemory(name="my_shared_memory3", create=True, size=10
 lock = Lock()
 ciclo = 0
 
-TIME_STEP = 64
+TIME_STEP = 256
 # Se crea instancia de supervisor
 supervisor = Supervisor()
 
