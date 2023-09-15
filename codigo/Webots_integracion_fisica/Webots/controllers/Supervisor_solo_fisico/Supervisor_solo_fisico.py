@@ -42,7 +42,7 @@ with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_s
 #setup_pos = np.load('../first_setup.npy')
 setup_pos = np.zeros((10, 6))
 for i in range(10):
-    setup_pos[i, 0] = i * 0.3 -1.8
+    setup_pos[i, 0] = i * 0.3 -1.3
     setup_pos[i, 1] = -1
     setup_pos[i, 2] = 0.5
 
@@ -67,7 +67,7 @@ def update_data():
         pose_eul = quat2eul(pose,'zyx')
         #print(pose_eul)
         return pose_eul        
-fisico = 1
+fisico = 0
 agents_pose = []
 if (fisico == 1):
     agents_pose = update_data()
@@ -132,8 +132,8 @@ X = np.empty([2,N])
 
 # Asignar posiciones random a cada agente
 for a in range(0,N):
-    X[0,a] = random.uniform(sizeVec[1]/2-0.1,-sizeVec[1]/2+0.1) #0.1 para que el carro no esté pegado a la pared
-    X[1,a] = random.uniform(sizeVec[0]/2-0.1,-sizeVec[0]/2+0.1)
+    X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.1 para que el carro no esté pegado a la pared
+    X[1,a] = random.uniform(sizeVec[0]/2-0.4,-sizeVec[0]/2+0.4)
 print("X",X)
 
 # Revisión de las posiciones    
@@ -170,7 +170,7 @@ while(cW1 > 1 or cW2 > 1):
 
 Xi = X
   
-agent_setup = 0
+agent_setup = 4
 # Asignar posiciones revisadas  
 for b in range(0, N):
     if (agent_setup == 1): # random agent position spawn
@@ -296,12 +296,8 @@ while supervisor.step(TIME_STEP) != -1:
         cambio = cambio + 1
     if (ciclo > 10):
         for obj in range(0,N):
-                if (obj != 1):
-                    V[0][obj] = V[0][obj] - 1*(posActuales[0][obj]-posIniPosVec[obj][1])
-                    V[1][obj] = V[1][obj] - 1*(posActuales[1][obj]-posIniPosVec[obj][0])
-                elif (obj == 1 and fisico == 1):
-                    V[0][1] = V[0][1] - 5*(posActuales[0][1]-agents_pose[9][0])
-                    V[1][1] = V[1][1] - 5*(posActuales[1][1]-agents_pose[9][1])
+            V[0][obj] = V[0][obj] - 5*(posActuales[0][obj]-posIniPosVec[obj][0])
+            V[1][obj] = V[1][obj] - 5*(posActuales[1][obj]-posIniPosVec[obj][1])
     lock.acquire()
     pick_V = pickle.dumps(V)
     shm1.buf[:len(pick_V)] = pick_V
@@ -324,7 +320,7 @@ while supervisor.step(TIME_STEP) != -1:
         #shm1.unlink()
         shm2.close()
         #shm2.unlink()
-        with open("robot_trajectory.csv", "w") as csvfile:
+        with open("robot_trajectory_posin1.csv", "w") as csvfile:
             for step in trajectory:
                 # Format and write each time step's positions to the CSV file
                 line = ",".join(map(str, step))

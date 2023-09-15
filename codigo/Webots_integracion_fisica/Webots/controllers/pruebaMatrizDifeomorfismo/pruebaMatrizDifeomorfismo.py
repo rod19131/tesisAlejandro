@@ -21,13 +21,13 @@ from multiprocessing import shared_memory, Lock
 from funciones_conjunto_3pi import *
 import time
 TIME_STEP = 64
-MAX_SPEED = 1
-MAX_SPEED_f = 150
+MAX_SPEED = 6.28
+MAX_SPEED_f = 50
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
-fisico = 2
+fisico = 0
 if (fisico == 0):
 
     # Dimensiones robot
@@ -88,7 +88,7 @@ if (fisico == 0):
         angDeg = (angRad/math.pi)*180
         if(angDeg < 0):
             angDeg = angDeg + 360
-        theta_o = angDeg
+        theta_o = angDeg 
         
     	# Transformación de velocidad lineal y velocidad angular
         v = (V[0][argc])*(math.cos(theta_o*math.pi/180)) + (V[1][argc])*(math.sin(theta_o*math.pi/180))
@@ -213,12 +213,20 @@ elif (fisico == 2):
     argc = int(robot.getCustomData())
     
     agente = argc + 1
-    if (argc == 1):
+    if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
         try:
             pololu = robotat_3pi_connect(agente)
         except:
             print("error, no se pudo conectar al pololu")
             pass
+    """
+    elif (argc == 3):
+        try:
+            pololu = robotat_3pi_connect(agente)
+        except:
+            print("error, no se pudo conectar al pololu")
+            pass
+    """
     # Enable compass
     compass = robot.getDevice("compass")
     compass.enable(TIME_STEP)
@@ -272,7 +280,7 @@ elif (fisico == 2):
             angDeg = angDeg + 360
         theta_o = angDeg
         
-        theta_o_f = agents_pose[1][3]+90
+        theta_o_f = agents_pose[argc][3]+90 #desfase de 90 grados por la orientación en la vida real
         if(theta_o_f < 0):
             thetha_o_f = theta_o_f + 360
     	# Transformación de velocidad lineal y velocidad angular
@@ -327,20 +335,38 @@ elif (fisico == 2):
     	# Asignación de velocidades a las ruedas
         leftMotor.setVelocity(phi_l)
         rightMotor.setVelocity(phi_r)
-        if (argc == 1):
+        if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
             try:
                 robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
                 #time.sleep(1)
             except:
                 #print("error, no se pudo conectar al pololu")
                 pass
+        """
+        elif (argc == 3):
+            try:
+                robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
+                #time.sleep(1)
+            except:
+                #print("error, no se pudo conectar al pololu")
+                pass
+        """
             
         if (robot.step(TIME_STEP) == -1):
-            if (argc == 1):
+            if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
                 try:
                     robotat_3pi_force_stop(pololu)
                     robotat_3pi_disconnect(pololu)
                 except:
                     #print("error, no se pudo conectar al pololu")
                     pass
+            """
+            elif (argc == 3):
+                try:
+                    robotat_3pi_force_stop(pololu)
+                    robotat_3pi_disconnect(pololu)
+                except:
+                    #print("error, no se pudo conectar al pololu")
+                    pass
+            """
         pass
