@@ -84,11 +84,11 @@ if (fisico == 0):
         
         # Orientación robot
         comVal = compass.getValues()
-        angRad = math.atan2(comVal[1],comVal[0])
+        angRad = math.atan2(comVal[0],comVal[1]) # se ingresan como (x,y) en lugar de (y,x) para compensar el desfase de 90° en físico
         angDeg = (angRad/math.pi)*180
         if(angDeg < 0):
             angDeg = angDeg + 360
-        theta_o = angDeg 
+        theta_o = angDeg
         
     	# Transformación de velocidad lineal y velocidad angular
         v = (V[0][argc])*(math.cos(theta_o*math.pi/180)) + (V[1][argc])*(math.sin(theta_o*math.pi/180))
@@ -274,7 +274,7 @@ elif (fisico == 2):
         
         # Orientación robot
         comVal = compass.getValues()
-        angRad = math.atan2(comVal[1],comVal[0])
+        angRad = math.atan2(comVal[0],comVal[1])
         angDeg = (angRad/math.pi)*180
         if(angDeg < 0):
             angDeg = angDeg + 360

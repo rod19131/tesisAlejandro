@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3545349639209045 -0.3300264596454653 -0.8748642724968732 4.150311606725395
-  position 2.563938995202922 -2.9811891020145405 4.335051784784495
+  orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
+  position 2.1432033617922608e-05 -0.00014129162938108402 10.13823440563366
 }
 TexturedBackground {
 }
@@ -73,8 +73,9 @@ DEF IniPos0 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
-        roughness 0.3
+        baseColor 1 0 0
+        transparency 0.6
+        roughness 0.2
         metalness 0
       }
       geometry Sphere {
@@ -92,7 +93,8 @@ DEF IniPos1 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -111,7 +113,8 @@ DEF IniPos2 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -130,7 +133,8 @@ DEF IniPos3 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -149,7 +153,8 @@ DEF IniPos4 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -168,7 +173,8 @@ DEF IniPos5 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -187,7 +193,8 @@ DEF IniPos6 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -206,7 +213,8 @@ DEF IniPos7 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -225,7 +233,8 @@ DEF IniPos8 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -244,7 +253,8 @@ DEF IniPos9 Solid {
   children [
     DEF BALL_SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 1 0.54 0.08
+        baseColor 1 0 0
+        transparency 0.6
         roughness 0.3
         metalness 0
       }
@@ -260,7 +270,7 @@ DEF IniPos9 Solid {
 E-puck {
   translation -0.15 0 0.25
   rotation 1 0 0 0
-  controller "Supervisor_solo_fisico"
+  controller "Supervisor_simulacion_y_fisico"
   controllerArgs [
     "Robot"
   ]
