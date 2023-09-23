@@ -109,7 +109,7 @@ pObjVec = pObj.getSFVec3f()
 """ AGENTES """
 NStart = 2
 NStart = NStart-1
-N = 6							# cantidad de agentes
+N = 4							# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -182,6 +182,8 @@ while(cW1 > 1 or cW2 > 1):
 Xi = X
   
 agent_setup = 4
+listaPosTodosVirt = []
+listaRotTodosVirt = []
 # Asignar posiciones revisadas  
 for b in range(NStart, N):
     if (agent_setup == 1): # random agent position spawn
@@ -208,6 +210,12 @@ for b in range(NStart, N):
         elif (fisico == 1):#probarfisico 
             PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
             RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
+            listaPosTodosVirt.append([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
+            listaRotTodosVirt.append([0, 0, 1, agents_pose[b,3]])
+            PosTodosVirt = np.array(listaPosTodosVirt)
+            RotTodosVirt = np.array(listaRotTodosVirt)
+            np.savez('cond_inicial_virt.npz', PosTodosVirt=PosTodosVirt, RotTodosVirt = RotTodosVirt)
+            
             
         for i in range(0, 10):
             inipos_name = f"IniPos{i+1}"
@@ -257,6 +265,7 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
+        if (fisico == 1):
     #print("cambio",cambio)
     	
 	# Se obtienen posiciones actuales
