@@ -47,6 +47,7 @@ for i in range(10):
     setup_pos[i, 2] = 0.5
 
 trajectory = []
+velocityHist = []
 desfases = np.load('calibracion_markers_inicial.npy')
 desfases_euler = quat2eul(desfases,'zyx')
 def update_data():
@@ -68,7 +69,7 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 0
+fisico = 1
 agents_pose = []
 if (fisico == 1):
     agents_pose = update_data()
@@ -83,6 +84,8 @@ sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 cantO = 3  # Adjust this to the number of obstacles you have
 Obstaculos = []
 posObs = []
+posObsIn = np.empty([2,cantO])
+sizeObsIn = np.empty([2,cantO])
 
 for i in range(0, cantO):
     obstacle_name = f"Obs{i}"
@@ -90,21 +93,24 @@ for i in range(0, cantO):
     pos_obstacle = obstacle.getField("translation")
     Obstaculos.append(obstacle)
     posObs.append(pos_obstacle)
+    posObsIn[0][i] = posObs[i].getSFVec3f()[0]
+    posObsIn[1][i] = posObs[i].getSFVec3f()[1]
 
-sizeO = 2.5*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
+sizeO = 3*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
 #print(sizeO) 0.175m
 #print(Obstaculos)
 
 """ Objetivo """
-"""
+
 objetivo = supervisor.getFromDef("OBJ")
 pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
-"""
+
 """ AGENTES """
-NStart = 0
-N = 10								# cantidad de agentes
-r = 0.1								 	# radio a considerar para evitar colisiones
+NStart = 2
+NStart = NStart-1
+N = 6							# cantidad de agentes
+r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
 
@@ -118,14 +124,14 @@ posIniPosVec = []
 
 
 for i in range(0, 10):
-    inipos_name = f"IniPos{i}"
+    inipos_name = f"IniPos{i+1}"
     inipos = supervisor.getFromDef(inipos_name)
     inipos_pos = inipos.getField("translation")
     inipos_pos_vec = inipos_pos.getSFVec3f()
     initialPositions.append(inipos)
     posIniPos.append(inipos_pos)
     posIniPosVec.append(inipos_pos_vec)
-    agent_name = f"Agent{i}"
+    agent_name = f"Agent{i+1}"
     agent = supervisor.getFromDef(agent_name)
     agent_pos = agent.getField("translation")
     agent_rot = agent.getField("rotation")
@@ -184,9 +190,12 @@ for b in range(NStart, N):
     elif (agent_setup == 2): # random initial position markers spawn
         posIniPos[b].setSFVec3f([X[1,b], X[0,b], 0.3])
         inipos_pos_vec = posIniPos[i].getSFVec3f()
+        posIniPosVec = []
         posIniPosVec.append(inipos_pos_vec)
                 
     elif (agent_setup == 3): # instant agent position based on saved setup
+        with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
+            setup_pos = pickle.load(f)
         PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     
     elif (agent_setup == 4): # custom agent positioning
@@ -196,12 +205,12 @@ for b in range(NStart, N):
         if (fisico == 0):  
             PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
             
-        elif (fisico == 2):#probarfisico 
+        elif (fisico == 1):#probarfisico 
             PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
             RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
             
         for i in range(0, 10):
-            inipos_name = f"IniPos{i}"
+            inipos_name = f"IniPos{i+1}"
             inipos = supervisor.getFromDef(inipos_name)
             inipos_pos = inipos.getField("translation")
             inipos_pos_vec = inipos_pos.getSFVec3f()
@@ -230,14 +239,20 @@ posActuales = np.zeros([2,N])
 # Matriz de velocidades
 V = np.zeros([2,N])
 
+# Matriz de obstaculos
+posObsAct = np.empty([2,cantO])
 # Matriz de formación
-d = Fmatrix(2,1)
+d = Fmatrix(1,1)
 print(d)
 
 # Main loop:
 cambio = 0						# variable para cambio de control 
 while supervisor.step(TIME_STEP) != -1:
     #print(posActuales)
+    if (fisico == 0):
+        for obs in range(0,cantO):
+            posObsAct[0][obs] = posObs[obs].getSFVec3f()[0]
+            posObsAct[1][obs] = posObs[obs].getSFVec3f()[1]
     if (fisico == 1):
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
@@ -266,7 +281,7 @@ while supervisor.step(TIME_STEP) != -1:
             if(mdist == 0 or mdist >= R):
                 w = 0
             else:
-                if(cambio == 1): 										# inicio: acercar a los agentes sin chocar
+                if(cambio == 1 or cambio == 0): 										# inicio: acercar a los agentes sin chocar
                     #print("collision avoidance")
                     w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
                 elif (cambio == 2):
@@ -278,12 +293,12 @@ while supervisor.step(TIME_STEP) != -1:
                         w = (4*(mdist - dij)*(mdist - r) - 2*(mdist - dij)**2)/(mdist*(mdist - r)**2)
                 
             # Tensión de aristas entre agentes 
-            E0 = E0 + 1*w*dist[0]
-            E1 = E1 + 1*w*dist[1]
+            E0 = E0 + 2*w*dist[0]
+            E1 = E1 + 2*w*dist[1]
         # Collision avoidance con obstáculos
         for j in range(0,cantO):
-            distO0 = posActuales[0,g] - posObs[j].getSFVec3f()[0]
-            distO1 = posActuales[1,g] - posObs[j].getSFVec3f()[1]  
+            distO0 = posActuales[0,g] - posObsAct[0][j]
+            distO1 = posActuales[1,g] - posObsAct[0][j]  
             mdistO = math.sqrt(distO0**2 + distO1**2) - sizeO
 
             if(abs(mdistO) < 0.0001):
@@ -307,17 +322,17 @@ while supervisor.step(TIME_STEP) != -1:
     if(normV < 0.3 and cambio == 1):
         cambio = 2
     
-    if (ciclo < 300 and cambio == 0):
+    if (ciclo < 400 and cambio == 0):
         for obj in range(NStart,N):
             V[0][obj] = V[0][obj] - 5*(posActuales[0][obj]-posIniPosVec[obj][0])
             V[1][obj] = V[1][obj] - 5*(posActuales[1][obj]-posIniPosVec[obj][1])
     
-    if (ciclo > 300 and cambio == 0):
+    if (ciclo > 400 and cambio == 0):
         cambio = 1
         
     if (cambio == 2):
-        V[0][NStart] = V[0][NStart] - 3*(posActuales[0][NStart]-posIniPosVec[NStart][0])
-        V[1][NStart] = V[1][NStart] - 3*(posActuales[1][NStart]-posIniPosVec[NStart][1])
+        V[0][NStart] = V[0][NStart] - 5*(posActuales[0][NStart]-pObjVec[0])
+        V[1][NStart] = V[1][NStart] - 5*(posActuales[1][NStart]-pObjVec[1])
         
     lock.acquire()
     pick_V = pickle.dumps(V)
@@ -325,8 +340,9 @@ while supervisor.step(TIME_STEP) != -1:
     pick_agents_pose = pickle.dumps(agents_pose)
     shm2.buf[:len(pick_agents_pose)] = pick_agents_pose
     lock.release()
-    #trajectory.append(posActuales.copy())
-    #print(ciclo)    
+    trajectory.append(posActuales.copy())
+    velocityHist.append(V.copy())
+    print(ciclo)    
     ciclo = ciclo + 1 
     
     if (supervisor.step(TIME_STEP) == -1):
@@ -336,10 +352,15 @@ while supervisor.step(TIME_STEP) != -1:
         shm1.buf[:len(pick_V)] = pick_V
         pick_agents_pose = pickle.dumps(agents_pose)
         shm2.buf[:len(pick_agents_pose)] = pick_agents_pose
+        trajectory_data = np.array(trajectory)
+        velocity_data = np.array(velocityHist)
+        np.save('trial0.npy', trajectory_data)
+        np.savez('trial0.npz', trajectory_data=trajectory_data, velocity_data = velocity_data, ciclo = ciclo, posObsIn = posObsIn, sizeO = sizeO, NStart = NStart, pObjVec = pObjVec)       
         lock.release()
         shm1.close()
         #shm1.unlink()
         shm2.close()
+        
         #shm2.unlink()
         
         break

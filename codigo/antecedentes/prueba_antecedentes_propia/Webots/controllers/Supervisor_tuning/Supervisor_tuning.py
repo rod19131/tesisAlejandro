@@ -171,7 +171,7 @@ posNuevas = np.zeros([2,N])
 V = np.empty([2,N])
 
 # Matriz de formación
-d = Fmatrix(2,1)
+d = Fmatrix(1,1)
 print(d)
 
 # Main loop:

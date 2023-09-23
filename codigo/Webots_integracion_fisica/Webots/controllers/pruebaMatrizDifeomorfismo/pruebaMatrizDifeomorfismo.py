@@ -22,12 +22,12 @@ from funciones_conjunto_3pi import *
 import time
 TIME_STEP = 64
 MAX_SPEED = 6.28
-MAX_SPEED_f = 50
+MAX_SPEED_f = 40
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
-fisico = 0
+fisico = 2
 if (fisico == 0):
 
     # Dimensiones robot
@@ -213,7 +213,8 @@ elif (fisico == 2):
     argc = int(robot.getCustomData())
     
     agente = argc + 1
-    if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+    #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+    if (argc == 1 or argc == 2 or argc == 3): 
         try:
             pololu = robotat_3pi_connect(agente)
         except:
@@ -335,7 +336,8 @@ elif (fisico == 2):
     	# Asignación de velocidades a las ruedas
         leftMotor.setVelocity(phi_l)
         rightMotor.setVelocity(phi_r)
-        if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+        #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+        if (argc == 1 or argc == 2 or argc == 3):
             try:
                 robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
                 #time.sleep(1)
@@ -353,13 +355,15 @@ elif (fisico == 2):
         """
             
         if (robot.step(TIME_STEP) == -1):
-            if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+            #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+            if (argc == 1 or argc == 2 or argc == 3):    
                 try:
                     robotat_3pi_force_stop(pololu)
                     robotat_3pi_disconnect(pololu)
                 except:
                     #print("error, no se pudo conectar al pololu")
                     pass
+            break
             """
             elif (argc == 3):
                 try:

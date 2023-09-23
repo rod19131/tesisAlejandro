@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
-  position 2.1432033617922608e-05 -0.00014129162938108402 10.13823440563366
+  position 6.654322371677695e-05 -9.618227569786687e-05 9.030132036720456
 }
 TexturedBackground {
 }
@@ -67,7 +67,7 @@ DEF Obs2 SolidTorus {
     metalness 0
   }
 }
-DEF IniPos0 Solid {
+DEF IniPos1 Solid {
   translation -1.5 0 0.3
   rotation 0 1 0 0
   children [
@@ -87,7 +87,27 @@ DEF IniPos0 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos1 Solid {
+DEF OBJ Solid {
+  translation 0.66 1.03 0.3
+  rotation 0 1 0 0
+  children [
+    DEF BALL_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.666667 0
+        transparency 0.1
+        roughness 0.2
+        metalness 0
+      }
+      geometry Sphere {
+        radius 0.1
+      }
+    }
+  ]
+  name "ball(11)"
+  model "ball"
+  boundingObject USE BALL_SHAPE
+}
+DEF IniPos2 Solid {
   translation -1.5 0.3 0.3
   rotation 0 1 0 0
   children [
@@ -107,7 +127,7 @@ DEF IniPos1 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos2 Solid {
+DEF IniPos3 Solid {
   translation -1.5 0.6 0.3
   rotation 0 1 0 0
   children [
@@ -127,7 +147,7 @@ DEF IniPos2 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos3 Solid {
+DEF IniPos4 Solid {
   translation -1.5 0.9 0.3
   rotation 0 1 0 0
   children [
@@ -147,7 +167,7 @@ DEF IniPos3 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos4 Solid {
+DEF IniPos5 Solid {
   translation -1.5 1.2 0.3
   rotation 0 1 0 0
   children [
@@ -167,7 +187,7 @@ DEF IniPos4 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos5 Solid {
+DEF IniPos6 Solid {
   translation -1.5 1.5 0.3
   rotation 0 1 0 0
   children [
@@ -187,7 +207,7 @@ DEF IniPos5 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos6 Solid {
+DEF IniPos7 Solid {
   translation -1.5 1.8 0.3
   rotation 0 1 0 0
   children [
@@ -207,7 +227,7 @@ DEF IniPos6 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos7 Solid {
+DEF IniPos8 Solid {
   translation -1.5 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -227,7 +247,7 @@ DEF IniPos7 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos8 Solid {
+DEF IniPos9 Solid {
   translation -1.2 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -247,7 +267,7 @@ DEF IniPos8 Solid {
   model "ball"
   boundingObject USE BALL_SHAPE
 }
-DEF IniPos9 Solid {
+DEF IniPos10 Solid {
   translation -0.9 2.1 0.3
   rotation 0 1 0 0
   children [
@@ -276,9 +296,9 @@ E-puck {
   ]
   supervisor TRUE
 }
-DEF Agent0 E-puck {
+DEF Agent1 E-puck {
   translation 0.11 0 0
-  name "Agente0"
+  name "Agente1"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "0"
@@ -293,9 +313,9 @@ DEF Agent0 E-puck {
     }
   ]
 }
-DEF Agent1 E-puck {
+DEF Agent2 E-puck {
   translation 0.28 0 0
-  name "Agente1"
+  name "Agente2"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "1"
@@ -310,9 +330,9 @@ DEF Agent1 E-puck {
     }
   ]
 }
-DEF Agent2 E-puck {
+DEF Agent3 E-puck {
   translation 0.48 0 0
-  name "Agente2"
+  name "Agente3"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "2"
@@ -327,9 +347,9 @@ DEF Agent2 E-puck {
     }
   ]
 }
-DEF Agent3 E-puck {
+DEF Agent4 E-puck {
   translation 0.66 0 0
-  name "Agente3"
+  name "Agente4"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "3"
@@ -344,9 +364,9 @@ DEF Agent3 E-puck {
     }
   ]
 }
-DEF Agent4 E-puck {
+DEF Agent5 E-puck {
   translation 0.87 0 0
-  name "Agente4"
+  name "Agente5"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "4"
@@ -361,9 +381,9 @@ DEF Agent4 E-puck {
     }
   ]
 }
-DEF Agent5 E-puck {
+DEF Agent6 E-puck {
   translation 1.04 0 0
-  name "Agente5"
+  name "Agente6"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "5"
@@ -378,9 +398,9 @@ DEF Agent5 E-puck {
     }
   ]
 }
-DEF Agent6 E-puck {
+DEF Agent7 E-puck {
   translation 1.21 0 0
-  name "Agente6"
+  name "Agente7"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "6"
@@ -395,9 +415,9 @@ DEF Agent6 E-puck {
     }
   ]
 }
-DEF Agent7 E-puck {
+DEF Agent8 E-puck {
   translation 1.37 0 0
-  name "Agente7"
+  name "Agente9"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "7"
@@ -412,7 +432,7 @@ DEF Agent7 E-puck {
     }
   ]
 }
-DEF Agent8 E-puck {
+DEF Agent9 E-puck {
   translation 1.53 0 0
   name "Agente8"
   controller "pruebaMatrizDifeomorfismo"
@@ -429,9 +449,9 @@ DEF Agent8 E-puck {
     }
   ]
 }
-DEF Agent9 E-puck {
+DEF Agent10 E-puck {
   translation 1.7 0 0
-  name "Agente9"
+  name "Agente10"
   controller "pruebaMatrizDifeomorfismo"
   controllerArgs [
     "9"
