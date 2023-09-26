@@ -48,8 +48,7 @@ for i in range(10):
 
 trajectory = []
 velocityHist = []
-desfases = np.load('calibracion_markers_inicial.npy')
-desfases_euler = quat2eul(desfases,'zyx')
+
 def update_data():
     try: 
         robotat = robotat_connect()
@@ -69,9 +68,11 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 1
+fisico = 0
 agents_pose = []
 if (fisico == 1):
+    desfases = np.load('calibracion_markers_inicial.npy')
+    desfases_euler = quat2eul(desfases,'zyx')
     agents_pose = update_data()
 """ ARENA """
 arena = supervisor.getFromDef("Arena")
@@ -108,7 +109,7 @@ pObjVec = pObj.getSFVec3f()
 """ AGENTES """
 NStart = 2
 NStart = NStart-1
-N = 6							# cantidad de agentes
+N = 8							# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -116,6 +117,10 @@ MAX_SPEED = 6.28						# velocidad máxima
 Agents = []
 PosTodos = []
 RotTodos = []
+
+PosTodosVec = []
+RotTodosVec = []
+
 
 initialPositions = []
 posIniPos = []
@@ -134,15 +139,19 @@ for i in range(0, 10):
     agent = supervisor.getFromDef(agent_name)
     agent_pos = agent.getField("translation")
     agent_rot = agent.getField("rotation")
+    pos_todos_vec = agent_pos.getSFVec3f()
+    rot_todos_vec = agent_rot.getSFVec3f()
     Agents.append(agent)
     PosTodos.append(agent_pos)
     RotTodos.append(agent_rot)
+    PosTodosVec.append(pos_todos_vec)
+    RotTodosVec.append(rot_todos_vec)
  
 X = np.empty([2,N])
 
 # Asignar posiciones random a cada agente
 for a in range(NStart,N):
-    X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.1 para que el carro no esté pegado a la pared
+    X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.4 para que el carro no esté pegado a la pared
     X[1,a] = random.uniform(sizeVec[0]/2-0.4,-sizeVec[0]/2+0.4)
 print("X",X)
 
@@ -180,19 +189,16 @@ while(cW1 > 1 or cW2 > 1):
 
 Xi = X
   
+# Asignar posiciones revisadas
 agent_setup = 4
-listaPosTodosVirt = []
-listaRotTodosVirt = []
-# Asignar posiciones revisadas  
+
 for b in range(NStart, N):
     if (agent_setup == 1): # random agent position spawn
         PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
         
     elif (agent_setup == 2): # random initial position markers spawn
         posIniPos[b].setSFVec3f([X[1,b], X[0,b], 0.3])
-        inipos_pos_vec = posIniPos[i].getSFVec3f()
-        posIniPosVec = []
-        posIniPosVec.append(inipos_pos_vec)
+        posIniPosVec[b] = posIniPos[b].getSFVec3f()
                 
     elif (agent_setup == 3): # instant agent position based on saved setup
         with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_setup.pickle','rb') as f:
@@ -200,36 +206,31 @@ for b in range(NStart, N):
         PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     
     elif (agent_setup == 4): # custom agent positioning
-        initialPositions = []
-        posIniPos = []
-        posIniPosVec = []
         if (fisico == 0):  
             PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
-            
+            posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
+            posIniPosVec[b] = posIniPos[b].getSFVec3f()
+            """
+            PosTodosVec[b] = PosTodos[b].getSFVec3f()
+            RotTodosVec[b] = RotTodos[b].getSFVec3f()
+            PosRealAgents = np.array(PosTodosVec)
+            RotRealAgents = np.array(RotTodosVec)
+            np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents)
+            """
         elif (fisico == 1):#probarfisico 
+            posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
+            posIniPosVec[b] = posIniPos[b].getSFVec3f()
             PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
             RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
-            listaPosTodosVirt.append([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
-            listaRotTodosVirt.append([0, 0, 1, agents_pose[b,3]])
-            PosTodosVirt = np.array(listaPosTodosVirt)
-            RotTodosVirt = np.array(listaRotTodosVirt)
-            np.savez('cond_inicial_virt.npz', PosTodosVirt=PosTodosVirt, RotTodosVirt = RotTodosVirt)
-            
-            
-        for i in range(0, 10):
-            inipos_name = f"IniPos{i+1}"
-            inipos = supervisor.getFromDef(inipos_name)
-            inipos_pos = inipos.getField("translation")
-            inipos_pos_vec = inipos_pos.getSFVec3f()
-            initialPositions.append(inipos)
-            posIniPos.append(inipos_pos)
-            posIniPosVec.append(inipos_pos_vec)
-            posIniPos[i].setSFVec3f([setup_pos[i,0],setup_pos[i,1], setup_pos[i,2]])
-        pass
+            PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
+            RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
+            PosRealAgents = np.array(PosTodosVec)
+            RotRealAgents = np.array(RotTodosVec)
+            np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents)
+
     #pObjs[b].setSFVec3f([X[1,b], X[0,b], 0.3])
     #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
-    pass
     
     
 """    
@@ -264,6 +265,11 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
+        """
+        for obs in range(0,cantO):
+            posObsAct[0][obs] = agents_pose[obs+9,0]
+            posObsAct[1][obs] = agents_pose[obs+9,1]
+        """
     #print("cambio",cambio)
     	
 	# Se obtienen posiciones actuales
@@ -291,7 +297,7 @@ while supervisor.step(TIME_STEP) != -1:
                 if(cambio == 1 or cambio == 0): 										# inicio: acercar a los agentes sin chocar
                     #print("collision avoidance")
                     w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
-                elif (cambio == 2):
+                elif (cambio == 2 or cambio == 3):
                     if(dij == 0):										# si no hay arista, se usa función plana como collision avoidance
                         print("cosh")
                         w = 0.15*math.sinh(15*mdist-6)/mdist 		
@@ -326,8 +332,11 @@ while supervisor.step(TIME_STEP) != -1:
     normV = math.sqrt(normV2)
     print("normV", normV)
     
-    if(normV < 0.3 and cambio == 1):
+    if(normV < 1 and cambio == 1):
         cambio = 2
+    
+    if(normV < 0.3 and cambio == 2):
+        cambio = 3    
     
     if (ciclo < 400 and cambio == 0):
         for obj in range(NStart,N):
@@ -337,7 +346,7 @@ while supervisor.step(TIME_STEP) != -1:
     if (ciclo > 400 and cambio == 0):
         cambio = 1
         
-    if (cambio == 2):
+    if (cambio == 3):
         V[0][NStart] = V[0][NStart] - 5*(posActuales[0][NStart]-pObjVec[0])
         V[1][NStart] = V[1][NStart] - 5*(posActuales[1][NStart]-pObjVec[1])
         
