@@ -69,6 +69,7 @@ def update_data():
         return pose_eul   
      
 fisico = 0
+r_initial_conditions = 0 #
 agents_pose = []
 if (fisico == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
@@ -84,7 +85,7 @@ sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 cantO = 3  # Adjust this to the number of obstacles you have
 Obstaculos = []
 posObs = []
-posObsIn = np.empty([2,cantO])
+posObsAct = np.empty([2,cantO])
 sizeObsIn = np.empty([2,cantO])
 
 for i in range(0, cantO):
@@ -93,8 +94,8 @@ for i in range(0, cantO):
     pos_obstacle = obstacle.getField("translation")
     Obstaculos.append(obstacle)
     posObs.append(pos_obstacle)
-    posObsIn[0][i] = posObs[i].getSFVec3f()[0]
-    posObsIn[1][i] = posObs[i].getSFVec3f()[1]
+    posObsAct[0][i] = posObs[i].getSFVec3f()[0]
+    posObsAct[1][i] = posObs[i].getSFVec3f()[1]
 
 sizeO = 3*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
 #print(sizeO) 0.175m
@@ -190,7 +191,8 @@ while(cW1 > 1 or cW2 > 1):
 Xi = X
   
 # Asignar posiciones revisadas
-agent_setup = 4
+agent_setup = 5
+initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
 for b in range(NStart, N):
     if (agent_setup == 1): # random agent position spawn
@@ -206,10 +208,11 @@ for b in range(NStart, N):
         PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
     
     elif (agent_setup == 4): # custom agent positioning
+    
+        posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
+        posIniPosVec[b] = posIniPos[b].getSFVec3f()
         if (fisico == 0):  
             PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
-            posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
-            posIniPosVec[b] = posIniPos[b].getSFVec3f()
             """
             PosTodosVec[b] = PosTodos[b].getSFVec3f()
             RotTodosVec[b] = RotTodos[b].getSFVec3f()
@@ -218,20 +221,41 @@ for b in range(NStart, N):
             np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents)
             """
         elif (fisico == 1):#probarfisico 
-            posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
-            posIniPosVec[b] = posIniPos[b].getSFVec3f()
             PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
             RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
             PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
             RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
-            PosRealAgents = np.array(PosTodosVec)
-            RotRealAgents = np.array(RotTodosVec)
-            np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents)
-
+    
+    elif (agent_setup == 5):
+        if (initial_pos_setup == 0):
+            posIniPos[b].setSFVec3f([X[1,b], X[0,b], 0.3])
+            
+        elif (initial_pos_setup == 1):
+            posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
+            
+        posIniPosVec[b] = posIniPos[b].getSFVec3f()
+        
+        if (fisico == 0):
+            if (r_initial_conditions == 0): 
+                PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+            elif (r_initial_conditions == 1):
+                pass
+            
+        if (fisico == 1):  #try elif later
+            PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
+            RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
+            PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
+            RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
+        
     #pObjs[b].setSFVec3f([X[1,b], X[0,b], 0.3])
     #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
-    
+  
+
+if (fisico == 1):
+    PosRealAgents = np.array(PosTodosVec)
+    RotRealAgents = np.array(RotTodosVec)
+    np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, posIniPosVec = posIniPosVec,  posObsAct = posObsAct, pObjVec = pObjVec, NStart = NStart, N = N)
     
 """    
 for obstacle in range(0, len(posObs)):
@@ -265,11 +289,11 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
-        """
+        
         for obs in range(0,cantO):
-            posObsAct[0][obs] = agents_pose[obs+9,0]
-            posObsAct[1][obs] = agents_pose[obs+9,1]
-        """
+            posObsAct[0][obs] = agents_pose[obs+10,0]
+            posObsAct[1][obs] = agents_pose[obs+10,1]
+        
     #print("cambio",cambio)
     	
 	# Se obtienen posiciones actuales
@@ -371,7 +395,7 @@ while supervisor.step(TIME_STEP) != -1:
         trajectory_data = np.array(trajectory)
         velocity_data = np.array(velocityHist)
         np.save('trial0.npy', trajectory_data)
-        np.savez('trial0.npz', trajectory_data=trajectory_data, velocity_data = velocity_data, ciclo = ciclo, posObsIn = posObsIn, sizeO = sizeO, NStart = NStart, pObjVec = pObjVec)       
+        np.savez('trial0.npz', trajectory_data=trajectory_data, velocity_data = velocity_data, ciclo = ciclo, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, pObjVec = pObjVec)       
         lock.release()
         shm1.close()
         #shm1.unlink()
