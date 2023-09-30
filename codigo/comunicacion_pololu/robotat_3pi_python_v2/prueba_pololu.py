@@ -2,7 +2,7 @@ import time
 from funciones_conjunto_3pi import *
 try:
     #robot = robotat_3pi_connect(5)
-    robot2 = robotat_3pi_connect(2)
+    robot2 = robotat_3pi_connect(6)
     #print(f"Connected to robot ID: {robot['id']}, IP: {robot['ip']}, Port: {robot['port']}")
     print(f"Connected to robot ID: {robot2['id']}, IP: {robot2['ip']}, Port: {robot2['port']}")
     #robotat_3pi_set_wheel_velocities(robot, -50, 50)

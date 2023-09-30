@@ -68,13 +68,16 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 0
-r_initial_conditions = 0 #
+fisico = 1
+r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 agents_pose = []
 if (fisico == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
     desfases_euler = quat2eul(desfases,'zyx')
     agents_pose = update_data()
+    for marker in range(len(agents_pose)):
+            agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
+    
 """ ARENA """
 arena = supervisor.getFromDef("Arena")
 size = arena.getField("floorSize")
@@ -108,9 +111,9 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 2
+NStart = 5
 NStart = NStart-1
-N = 8							# cantidad de agentes
+N = 5						# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -194,6 +197,23 @@ Xi = X
 agent_setup = 5
 initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
+if (r_initial_conditions == 1):
+    desfases = np.load('calibracion_markers_inicial.npy')
+    desfases_euler = quat2eul(desfases,'zyx')
+    initial_data = np.load('initial_conditions_f_posini_obs_save.npz')
+    PosRealAgents = initial_data['PosRealAgents']
+    RotRealAgents = initial_data['RotRealAgents']
+    PosRealIniPosVec = initial_data['posIniPosVec']
+    posObsAct = initial_data['posObsAct']
+    pObjVec = initial_data['pObjVec']
+    N = initial_data['N']
+    NStart = initial_data['NStart']
+    pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
+
+if (r_initial_conditions == 1):
+    for i in range(0, cantO):
+        posObs[i].setSFVec3f([posObsAct[0,i], posObsAct[1,i], -6.39203e-05])
+
 for b in range(NStart, N):
     if (agent_setup == 1): # random agent position spawn
         PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
@@ -233,12 +253,14 @@ for b in range(NStart, N):
         elif (initial_pos_setup == 1):
             posIniPos[b].setSFVec3f([setup_pos[b,0],setup_pos[b,1], setup_pos[b,2]])
             
-        posIniPosVec[b] = posIniPos[b].getSFVec3f()
-        
         if (fisico == 0):
             if (r_initial_conditions == 0): 
                 PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
+                
             elif (r_initial_conditions == 1):
+                PosTodos[b].setSFVec3f([PosRealAgents[b,0], PosRealAgents[b,1], -6.39203e-05])
+                RotTodos[b].setSFRotation([0, 0, 1, RotRealAgents[b,3]])
+                posIniPos[b].setSFVec3f([PosRealIniPosVec[b,0], PosRealIniPosVec[b,1], -6.39203e-05])
                 pass
             
         if (fisico == 1):  #try elif later
@@ -246,7 +268,8 @@ for b in range(NStart, N):
             RotTodos[b].setSFRotation([0, 0, 1, agents_pose[b,3]])
             PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
             RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
-        
+            
+        posIniPosVec[b] = posIniPos[b].getSFVec3f()
     #pObjs[b].setSFVec3f([X[1,b], X[0,b], 0.3])
     #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
@@ -272,7 +295,7 @@ posActuales = np.zeros([2,N])
 V = np.zeros([2,N])
 
 # Matriz de obstaculos
-posObsAct = np.empty([2,cantO])
+#posObsAct = np.empty([2,cantO])
 # Matriz de formación
 d = Fmatrix(1,1)
 print(d)
@@ -289,11 +312,11 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
-        
+        """
         for obs in range(0,cantO):
             posObsAct[0][obs] = agents_pose[obs+10,0]
             posObsAct[1][obs] = agents_pose[obs+10,1]
-        
+        """
     #print("cambio",cambio)
     	
 	# Se obtienen posiciones actuales
