@@ -111,9 +111,9 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 5
+NStart = 10
 NStart = NStart-1
-N = 5						# cantidad de agentes
+N = 10						# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -312,11 +312,11 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
-        """
+        
         for obs in range(0,cantO):
-            posObsAct[0][obs] = agents_pose[obs+10,0]
-            posObsAct[1][obs] = agents_pose[obs+10,1]
-        """
+            posObsAct[0][obs] = agents_pose[obs+10,1]
+            posObsAct[1][obs] = agents_pose[obs+10,0]
+        
     #print("cambio",cambio)
     	
 	# Se obtienen posiciones actuales

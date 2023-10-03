@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trialC5A_2.npz')
+data = np.load('trialC4A_2.npz')
 #print(data)
 
 #to find out the files within the .npz
@@ -81,7 +81,7 @@ plt.ylim([-20, 20])
 # naming the x axis
 plt.xlabel('t (ciclos)')
 # naming the y axis
-plt.ylabel('Vx (m/s)')
+plt.ylabel('Vx (unidades/s)')
   
 # giving a title to my graph
 plt.title('Velocidades en X')
@@ -103,7 +103,7 @@ plt.ylim([-20, 20])
 # naming the x axis
 plt.xlabel('t (ciclos)')
 # naming the y axis
-plt.ylabel('Vy (m/s)')
+plt.ylabel('Vy (unidades/s)')
   
 # giving a title to my graph
 plt.title('Velocidades en Y')
