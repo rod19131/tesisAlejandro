@@ -290,7 +290,7 @@ DEF IniPos10 Solid {
 E-puck {
   translation -0.15 0 0.25
   rotation 1 0 0 0
-  controller "Supervisor_simulacion_y_fisico"
+  controller "Supervisor_simulacion_y_fisico_v2"
   controllerArgs [
     "Robot"
   ]

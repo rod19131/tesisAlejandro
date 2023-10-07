@@ -70,6 +70,8 @@ def update_data():
      
 fisico = 1
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
+r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
+r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
 agents_pose = []
 if (fisico == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
@@ -111,7 +113,7 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 10
+NStart = 7
 NStart = NStart-1
 N = 10						# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
@@ -312,10 +314,13 @@ while supervisor.step(TIME_STEP) != -1:
         agents_pose = update_data()
         for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
-        
-        for obs in range(0,cantO):
-            posObsAct[0][obs] = agents_pose[obs+10,1]
-            posObsAct[1][obs] = agents_pose[obs+10,0]
+        if (r_obs == 1):
+            for obs in range(0,cantO):
+                posObsAct[0][obs] = agents_pose[obs+10,0]
+                posObsAct[1][obs] = agents_pose[obs+10,1]
+        if (r_obj == 1):
+            pObjVec[0] = agents_pose[13,0]
+            pObjVec[1] = agents_pose[13,1]
         
     #print("cambio",cambio)
     	
