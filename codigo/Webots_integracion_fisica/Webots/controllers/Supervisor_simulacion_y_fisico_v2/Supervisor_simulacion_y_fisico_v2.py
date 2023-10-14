@@ -68,7 +68,7 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 1
+fisico = 0
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
@@ -414,7 +414,7 @@ while supervisor.step(TIME_STEP) != -1:
     ciclo = ciclo + 1 
     
     if (supervisor.step(TIME_STEP) == -1):
-        V = np.empty([2,N])
+        V = np.zeros([2,N])
         lock.acquire()
         pick_V = pickle.dumps(V)
         shm1.buf[:len(pick_V)] = pick_V
