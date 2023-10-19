@@ -17,12 +17,13 @@ from controller import Robot, Compass, Motor
 import math
 import numpy as np
 import pickle
+import keyboard
 from multiprocessing import shared_memory, Lock
 from funciones_conjunto_3pi import *
 import time
 TIME_STEP = 64
 MAX_SPEED = 6.28
-MAX_SPEED_f = 50
+MAX_SPEED_f = 40
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
@@ -214,7 +215,7 @@ elif (fisico == 2):
     
     agente = argc + 1
     #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-    if (argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9): 
+    if (agente == 2 or agente == 3 or agente == 4 or agente == 5 or agente == 6 or agente == 7 or agente == 8 or agente == 9 or agente == 10): 
         try:
             pololu = robotat_3pi_connect(agente)
         except:
@@ -337,7 +338,7 @@ elif (fisico == 2):
         leftMotor.setVelocity(phi_l)
         rightMotor.setVelocity(phi_r)
         #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-        if (argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+        if (agente == 2 or agente == 3 or agente == 4 or agente == 5 or agente == 6 or agente == 7 or agente == 8 or agente == 9 or agente == 10):
             try:
                 robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
                 #time.sleep(1)
@@ -354,9 +355,9 @@ elif (fisico == 2):
                 pass
         """
             
-        if (robot.step(TIME_STEP) == -1):
+        if keyboard.is_pressed('a'):
             #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-            if (argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):    
+            if (agente == 2 or agente == 3 or agente == 4 or agente == 5 or agente == 6 or agente == 7 or agente == 8 or agente == 9 or agente == 10):    
                 try:
                     robotat_3pi_force_stop(pololu)
                     robotat_3pi_disconnect(pololu)

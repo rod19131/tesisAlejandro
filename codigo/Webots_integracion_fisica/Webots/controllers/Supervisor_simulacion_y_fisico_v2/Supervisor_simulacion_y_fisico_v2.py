@@ -23,6 +23,7 @@ import numpy as np
 import random
 import math
 import pickle
+import keyboard
 from funVel import Fmatrix
 import funciones
 from multiprocessing import shared_memory, Lock
@@ -56,7 +57,7 @@ def update_data():
             #print(robotat)
             agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
             n_ag = len(agentes)
-            print("Number of agents:\n",n_ag)
+            #print("Number of agents:\n",n_ag)
             pose = robotat_get_pose(robotat, agentes)
         else:
             print("error")
@@ -113,9 +114,9 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 7
+NStart = 2
 NStart = NStart-1
-N = 10						# cantidad de agentes
+N = 10					# cantidad de agentes
 r = 0.06								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -351,10 +352,10 @@ while supervisor.step(TIME_STEP) != -1:
                     w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
                 elif (cambio == 2 or cambio == 3):
                     if(dij == 0):										# si no hay arista, se usa función plana como collision avoidance
-                        print("cosh")
+                        #print("cosh")
                         w = 0.15*math.sinh(15*mdist-6)/mdist 		
                     else:												# collision avoidance & formation control
-                        print("formacion")
+                        #print("formacion")
                         w = (4*(mdist - dij)*(mdist - r) - 2*(mdist - dij)**2)/(mdist*(mdist - r)**2)
                 
             # Tensión de aristas entre agentes 
@@ -401,7 +402,8 @@ while supervisor.step(TIME_STEP) != -1:
     if (cambio == 3):
         V[0][NStart] = V[0][NStart] - 5*(posActuales[0][NStart]-pObjVec[0])
         V[1][NStart] = V[1][NStart] - 5*(posActuales[1][NStart]-pObjVec[1])
-        
+    
+
     lock.acquire()
     pick_V = pickle.dumps(V)
     shm1.buf[:len(pick_V)] = pick_V
@@ -410,10 +412,11 @@ while supervisor.step(TIME_STEP) != -1:
     lock.release()
     trajectory.append(posActuales.copy())
     velocityHist.append(V.copy())
-    print(ciclo)    
+    print(ciclo)
+    print(cambio)    
     ciclo = ciclo + 1 
     
-    if (supervisor.step(TIME_STEP) == -1):
+    if keyboard.is_pressed('a'):
         V = np.zeros([2,N])
         lock.acquire()
         pick_V = pickle.dumps(V)
@@ -422,7 +425,7 @@ while supervisor.step(TIME_STEP) != -1:
         shm2.buf[:len(pick_agents_pose)] = pick_agents_pose
         trajectory_data = np.array(trajectory)
         velocity_data = np.array(velocityHist)
-        np.save('trial0.npy', trajectory_data)
+        #np.save('trial0.npy', trajectory_data)
         np.savez('trial0.npz', trajectory_data=trajectory_data, velocity_data = velocity_data, ciclo = ciclo, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, pObjVec = pObjVec)       
         lock.release()
         shm1.close()
@@ -432,8 +435,9 @@ while supervisor.step(TIME_STEP) != -1:
         #shm2.unlink()
         
         break
-       
+    """   
     if(ciclo > 3000):
+ 
         V = np.empty([2,N])
         #lock.acquire()
         shm1.close()
@@ -446,6 +450,6 @@ while supervisor.step(TIME_STEP) != -1:
         #del shm3
         #lock.release()
         break
-        
+    """    
     
      
