@@ -31,6 +31,7 @@ from funciones_conjunto import *
 
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1", create=True, size=1024)
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2", create=True, size=4096)
+shm3 = shared_memory.SharedMemory(name="my_shared_memory3", create=True, size=1024)
 lock = Lock()
 ciclo = 0   
 TIME_STEP = 64
@@ -44,7 +45,7 @@ with open('D:/AlejandroDigital/tesisAlejandro/codigo/comunicacion_pololu/first_s
 setup_pos = np.zeros((10, 6))
 for i in range(10):
     setup_pos[i, 0] = i * 0.3 -1.3
-    setup_pos[i, 1] = -1
+    setup_pos[i, 1] = -1.5
     setup_pos[i, 2] = 0.5
 
 trajectory = []
@@ -69,7 +70,7 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 0
+fisico = 1
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
@@ -114,10 +115,10 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 2
+NStart = 4
 NStart = NStart-1
-N = 10					# cantidad de agentes
-r = 0.06								 	# radio a considerar para evitar colisiones
+N = 5					# cantidad de agentes
+r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
 
@@ -300,7 +301,7 @@ V = np.zeros([2,N])
 # Matriz de obstaculos
 #posObsAct = np.empty([2,cantO])
 # Matriz de formación
-d = Fmatrix(1,1)
+d = Fmatrix(1,8)
 print(d)
 
 # Main loop:
@@ -341,7 +342,7 @@ while supervisor.step(TIME_STEP) != -1:
         for h in range(NStart,N):
             dist = np.asarray([posActuales[0][g]-posActuales[0][h], posActuales[1][g]-posActuales[1][h]])	# vector xi - xj   
             mdist = math.sqrt(dist[0]**2 + dist[1]**2)														# norma euclidiana vector xi - xj
-            dij = 0.2*d[g][h]																				# distancia deseada entre agentes i y j
+            dij = 0.3*d[g][h]																				# distancia deseada entre agentes i y j
             
 			# Peso añadido a la ecuación de consenso
             if(mdist == 0 or mdist >= R):
@@ -349,7 +350,8 @@ while supervisor.step(TIME_STEP) != -1:
             else:
                 if(cambio == 1 or cambio == 0): 										# inicio: acercar a los agentes sin chocar
                     #print("collision avoidance")
-                    w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
+                    w = 0.05*(mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 
+                    #w = (mdist - (2*(r+0.05)))/(mdist - (r+0.05))**2 	# collision avoidance
                 elif (cambio == 2 or cambio == 3):
                     if(dij == 0):										# si no hay arista, se usa función plana como collision avoidance
                         #print("cosh")
@@ -359,8 +361,8 @@ while supervisor.step(TIME_STEP) != -1:
                         w = (4*(mdist - dij)*(mdist - r) - 2*(mdist - dij)**2)/(mdist*(mdist - r)**2)
                 
             # Tensión de aristas entre agentes 
-            E0 = E0 + 2*w*dist[0]
-            E1 = E1 + 2*w*dist[1]
+            E0 = E0 + 5*w*dist[0]
+            E1 = E1 + 5*w*dist[1]
         # Collision avoidance con obstáculos
         for j in range(0,cantO):
             distO0 = posActuales[0,g] - posObsAct[0][j]
@@ -371,8 +373,8 @@ while supervisor.step(TIME_STEP) != -1:
                 mdistO = 0.0001
             w = -1/(mdistO**2)
 
-            E0 = E0 + 0.5*w*distO0
-            E1 = E1 + 0.5*w*distO1    
+            E0 = E0 + 0.6*w*distO0
+            E1 = E1 + 0.6*w*distO1    
         # Actualización de velocidad
         V[0][g] = -1*(E0)*TIME_STEP/1000 
         V[1][g] = -1*(E1)*TIME_STEP/1000 
@@ -391,12 +393,12 @@ while supervisor.step(TIME_STEP) != -1:
     if(normV < 0.3 and cambio == 2):
         cambio = 3    
     
-    if (ciclo < 400 and cambio == 0):
+    if (ciclo < 1000 and cambio == 0):
         for obj in range(NStart,N):
             V[0][obj] = V[0][obj] - 5*(posActuales[0][obj]-posIniPosVec[obj][0])
             V[1][obj] = V[1][obj] - 5*(posActuales[1][obj]-posIniPosVec[obj][1])
     
-    if (ciclo > 400 and cambio == 0):
+    if (ciclo > 1000 and cambio == 0):
         cambio = 1
         
     if (cambio == 3):
