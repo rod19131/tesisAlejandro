@@ -27,9 +27,11 @@ MAX_SPEED_f = 40
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
-shm3 = shared_memory.SharedMemory(name="my_shared_memory3")
 lock = Lock()
 fisico = 2
+NStart = 3
+N = 10
+
 if (fisico == 0):
 
     # Dimensiones robot
@@ -216,7 +218,7 @@ elif (fisico == 2):
     
     agente = argc + 1
     #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-    if (agente == 4 or agente == 5): 
+    if (NStart <= agente <= N): 
         try:
             pololu = robotat_3pi_connect(agente)
         except:
@@ -339,7 +341,7 @@ elif (fisico == 2):
         leftMotor.setVelocity(phi_l)
         rightMotor.setVelocity(phi_r)
         #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-        if (agente == 4 or agente == 5):
+        if (NStart <= agente <= N):
             try:
                 robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
                 #time.sleep(1)
@@ -358,7 +360,7 @@ elif (fisico == 2):
             
         if keyboard.is_pressed('a'):
             #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
-            if (agente == 4 or agente == 5):    
+            if (NStart <= agente <= N):    
                 try:
                     robotat_3pi_force_stop(pololu)
                     robotat_3pi_disconnect(pololu)

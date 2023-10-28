@@ -31,7 +31,7 @@ from funciones_conjunto import *
 
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1", create=True, size=1024)
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2", create=True, size=4096)
-shm3 = shared_memory.SharedMemory(name="my_shared_memory3", create=True, size=1024)
+
 lock = Lock()
 ciclo = 0   
 TIME_STEP = 64
@@ -115,9 +115,9 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 4
+NStart = 3
 NStart = NStart-1
-N = 5					# cantidad de agentes
+N = 10					# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -158,9 +158,11 @@ for i in range(0, 10):
 X = np.empty([2,N])
 
 # Asignar posiciones random a cada agente
-for a in range(NStart,N):
-    X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.4 para que el carro no esté pegado a la pared
-    X[1,a] = random.uniform(sizeVec[0]/2-0.4,-sizeVec[0]/2+0.4)
+for a in range(0, 10):
+    if a in range(NStart,N):
+        X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.4 para que el carro no esté pegado a la pared
+        X[1,a] = random.uniform(sizeVec[0]/2-0.4,-sizeVec[0]/2+0.4)
+
 print("X",X)
 
 # Revisión de las posiciones    
@@ -320,9 +322,18 @@ while supervisor.step(TIME_STEP) != -1:
             for obs in range(0,cantO):
                 posObsAct[0][obs] = agents_pose[obs+10,0]
                 posObsAct[1][obs] = agents_pose[obs+10,1]
+        
+        if (r_obs == 0):
+            for obs in range(0,cantO):
+                posObsAct[0][obs] = posObs[obs].getSFVec3f()[0]
+                posObsAct[1][obs] = posObs[obs].getSFVec3f()[1]
+        
         if (r_obj == 1):
             pObjVec[0] = agents_pose[13,0]
             pObjVec[1] = agents_pose[13,1]
+        
+        if (r_obj == 0):
+            pObjVec = pObj.getSFVec3f() 
         
     #print("cambio",cambio)
     	
