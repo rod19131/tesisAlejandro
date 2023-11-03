@@ -56,7 +56,7 @@ def update_data():
         robotat = robotat_connect()
         if robotat:
             #print(robotat)
-            agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+            agentes = [1,2,3,4,5,6,7,8,9,10]
             n_ag = len(agentes)
             #print("Number of agents:\n",n_ag)
             pose = robotat_get_pose(robotat, agentes)
@@ -115,7 +115,7 @@ pObj = objetivo.getField("translation")
 pObjVec = pObj.getSFVec3f()
 
 """ AGENTES """
-NStart = 3
+NStart = 7
 NStart = NStart-1
 N = 10					# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
@@ -398,10 +398,10 @@ while supervisor.step(TIME_STEP) != -1:
     normV = math.sqrt(normV2)
     print("normV", normV)
     
-    if(normV < 1 and cambio == 1):
+    if(normV < 0.5 and cambio == 1):
         cambio = 2
     
-    if(normV < 0.3 and cambio == 2):
+    elif(normV < 2 and cambio == 2):
         cambio = 3    
     
     if (ciclo < 1000 and cambio == 0):
