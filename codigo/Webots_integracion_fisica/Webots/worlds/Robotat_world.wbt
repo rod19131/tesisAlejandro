@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896257 0.5773502691896257 0.5773502691896257 2.0943245915045035
-  position 6.654322371677695e-05 -9.618227569786687e-05 9.030132036720456
+  position 0.00013639092246088897 -2.6337420359258458e-05 7.314406952281775
 }
 TexturedBackground {
 }
@@ -288,9 +288,9 @@ DEF IniPos10 Solid {
   boundingObject USE BALL_SHAPE
 }
 E-puck {
-  translation -0.15 0 0.25
+  translation -2.64 0 0.25
   rotation 1 0 0 0
-  controller "Supervisor_simulacion_y_fisico_v2"
+  controller "Supervisor_simulacion_y_fisico_v3"
   controllerArgs [
     "Robot"
   ]

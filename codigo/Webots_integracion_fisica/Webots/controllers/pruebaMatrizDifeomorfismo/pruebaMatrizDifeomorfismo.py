@@ -29,8 +29,8 @@ shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
 fisico = 2
-NStart = 7
-N = 10
+NStart = 2
+N = 6
 
 if (fisico == 0):
 
