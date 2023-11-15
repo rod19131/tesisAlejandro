@@ -9,7 +9,7 @@ else:
     print("error")
 try:
     print(robotat)
-    agentes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    agentes = [2]
     n = len(agentes)
     print("Number of agents:\n",n)
     disconnect = int(input("desconectar?"))

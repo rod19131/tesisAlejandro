@@ -78,11 +78,11 @@ def update_data():
         #print(pose_eul)
         return pose_eul   
      
-fisico = 1
-r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
+fisico = 0
+r_initial_conditions = 1 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
-begin_alg_time = 1000
+begin_alg_time = 400
 agents_pose = []
 if (fisico == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
@@ -126,7 +126,7 @@ pObjVec = pObj.getSFVec3f()
 """ AGENTES """
 NStart = 2
 NStart = NStart-1
-N = 6					# cantidad de agentes
+N = 2					# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4									# rango del radar
 MAX_SPEED = 6.28						# velocidad máxima
@@ -210,7 +210,7 @@ Xi = X
   
 # Asignar posiciones revisadas
 agent_setup = 5
-obs_active = 1
+obs_active = 0
 initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
 for i in range(0, cantO):
@@ -225,7 +225,7 @@ for b in range(0, 10):
 if (r_initial_conditions == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
     desfases_euler = quat2eul(desfases,'zyx')
-    initial_data = np.load('trial0.npz')
+    initial_data = np.load('trial_distance_1A_2.npz')
     PosRealAgents = initial_data['PosRealAgents']
     RotRealAgents = initial_data['RotRealAgents']
     PosRealIniPosVec = initial_data['posIniPosVec']
@@ -282,11 +282,10 @@ for b in range(NStart, N):
             if (r_initial_conditions == 0): 
                 PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
                 
-            elif (r_initial_conditions == 1):
+            if (r_initial_conditions == 1):
                 PosTodos[b].setSFVec3f([PosRealAgents[b,0], PosRealAgents[b,1], -6.39203e-05])
                 RotTodos[b].setSFRotation([0, 0, 1, RotRealAgents[b,3]])
                 posIniPos[b].setSFVec3f([PosRealIniPosVec[b,0], PosRealIniPosVec[b,1], 0.3])
-                pass
             
         if (fisico == 1):  #try elif later
             PosTodos[b].setSFVec3f([agents_pose[b,0], agents_pose[b,1], -6.39203e-05])
@@ -420,7 +419,7 @@ while supervisor.step(TIME_STEP) != -1:
         nV2 = V[0][m]**2 + V[1][m]**2
         normV2 = normV2 + nV2
     normV = math.sqrt(normV2)
-    #print("normV", normV)
+    print("normV", normV)
     
     if(normV < 0.5 and cambio == 1):
         cambio = 2
@@ -437,10 +436,15 @@ while supervisor.step(TIME_STEP) != -1:
             V[1][obj] = V[1][obj] - 5*(posActuales[1][obj]-posIniPosVec[obj][1])
             if ((posActuales[0][obj]-posIniPosVec[obj][0])<0.02 and (posActuales[1][obj]-posIniPosVec[obj][1])<0.02):
                 ready_ini_pos = ready_ini_pos + 1
-        if (ready_ini_pos == cont_N):
+        if (ready_ini_pos == cont_N and fisico == 1):
             begin_alg_time = ciclo
-            cambio = 1                           
-        print(V)
+            cambio = 1
+            for b in range(NStart, N):
+                PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
+                RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
+            PosRealAgents = np.array(PosTodosVec)
+            RotRealAgents = np.array(RotTodosVec)                            
+        #print(V)
         
     if (cambio == 3):
         V[0][NStart] = V[0][NStart] - 5*(posActuales[0][NStart]-pObjVec[0])
@@ -457,13 +461,7 @@ while supervisor.step(TIME_STEP) != -1:
     velocityHist.append(V.copy())
     print(ciclo)
     print(cambio)    
-    ciclo = ciclo + 1 
-    if (fisico == 1 and ciclo == begin_alg_time):
-        for b in range(NStart, N):
-            PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
-            RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
-        PosRealAgents = np.array(PosTodosVec)
-        RotRealAgents = np.array(RotTodosVec)     
+    ciclo = ciclo + 1     
     
     if keyboard.is_pressed('a'):
         V = np.zeros([2,N])
@@ -474,31 +472,11 @@ while supervisor.step(TIME_STEP) != -1:
         shm2.buf[:len(pick_agents_pose)] = pick_agents_pose
         trajectory_data = np.array(trajectory)
         velocity_data = np.array(velocityHist)
-        #np.save('trial0.npy', trajectory_data)
         np.savez('trial0.npz', trajectory_data=trajectory_data, velocity_data = velocity_data, ciclo = ciclo, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, N = N, pObjVec = pObjVec, PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, begin_alg_time = begin_alg_time, posIniPosVec = posIniPosVec, fisico = fisico)       
         lock.release()
         shm1.close()
-        #shm1.unlink()
-        shm2.close()
-        
-        #shm2.unlink()
-        
+        shm2.close()  
         break
-    """   
-    if(ciclo > 3000):
- 
-        V = np.empty([2,N])
-        #lock.acquire()
-        shm1.close()
-        #shm1.unlink()
-        shm2.close()
-        #shm2.unlink()
-        #shm3.unlink()
-        #del shm1
-        #del shm2
-        #del shm3
-        #lock.release()
-        break
-    """    
+
     
      

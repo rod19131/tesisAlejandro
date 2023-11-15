@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trial0.npz')
+data = np.load('trial_distance_1A_v_2.npz')
 #print(data)
 
 #to find out the files within the .npz
@@ -22,7 +22,7 @@ sizeO = data['sizeO']
 NStart = data['NStart']
 pObjVec = data['pObjVec']
 
-graphCycleStart = 1000
+graphCycleStart = 0
 
 # Extract x and y coordinates for each element
 x_positions = trajectory[:, 0, :]

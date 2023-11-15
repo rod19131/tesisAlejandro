@@ -28,9 +28,9 @@ MAX_SPEED_f = 30
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
-fisico = 2
+fisico = 0
 NStart = 2
-N = 6
+N = 2
 
 if (fisico == 0):
 
