@@ -9,11 +9,13 @@ else:
     print("error")
 try:
     print(robotat)
-    agentes = [2]
+    agentes = [1,2,3,4,5,6,7,8,9,10]
     n = len(agentes)
     print("Number of agents:\n",n)
     disconnect = int(input("desconectar?"))
     pose = robotat_get_pose(robotat, agentes)
+    print("Pose per agent\n:", pose)
+    pose = robotat_get_pose(robotat, [1,2,3,4,5])
     print("Pose per agent\n:", pose)
    # eul = quaternion_to_euler(list(pose[0]),'xyz')
 

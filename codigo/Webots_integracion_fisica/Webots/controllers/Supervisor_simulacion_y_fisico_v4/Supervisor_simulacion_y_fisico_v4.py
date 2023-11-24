@@ -41,17 +41,17 @@ supervisor = Supervisor()
 
 fisico = 1  # 0 to use Webots, 1 to use Robotat
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
-r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
-r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
+r_obs = 1 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
+r_obj = 1 # 0 para objetivo virtual 1 para objetivo real
 
 # Matriz de formación
 form_shape = 1
 rigidity_level = 8
 """ AGENTES """
 NMax = 10
-NStart = 4
+NStart = 2
 NStart = NStart-1
-N = 6				# cantidad de agentes
+N = 9				# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4	
 setup_pos = np.zeros((NMax, 6))
@@ -60,6 +60,10 @@ setup_shape_space = 1.5
 # Specify the starting point
 setup_starting_point = np.array([-1.0, -1.5])
 
+# Asignar posiciones revisadas
+agent_setup = 5
+obs_active = 1
+initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
 if (setup_shape == 0):
     for i in range(NStart,N):
@@ -83,11 +87,19 @@ for i in range(3):
 """
 
 								# rango del radar
-MAX_SPEED = 30						# velocidad máxima
+MAX_SPEED = 25						# velocidad máxima
 total_agent_number = N-NStart
 total_agent_weight = (N-NStart)/NMax
 begin_alg_time = 400 # valor arbitrario para inicializar variable    
-    
+obj_marker = 1  
+obs_start_marker = 10
+obs_start_marker = obs_start_marker - 1 
+obj_marker = obj_marker - 1 
+
+if(r_obj == 0):
+   obj_marker = -1 
+if(r_obs == 0):
+   obs_start_marker = -1  
     
     
 trajectory = []
@@ -101,29 +113,33 @@ form_cycle = 0
 obj_cycle = 0
 agents_pose = []
 
-def update_data():
+def update_data(robotat):
     try: 
-        robotat = robotat_connect()
         if robotat:
             #print(robotat)
             agentes = [1,2,3,4,5,6,7,8,9,10,11,12]
             n_ag = len(agentes)
             #print("Number of agents:\n",n_ag)
             pose = robotat_get_pose(robotat, agentes)
-        else:
-            print("error")
+            pose_eul = quat2eul(pose,'zyx')
+        else: 
+            print("no connection?")
+            pose_eul = None
     except:
         print("error")
+        print(pose)
+        pose_eul = None
     finally:
-        robotat_disconnect(robotat)
-        pose_eul = quat2eul(pose,'zyx')
-        #print(pose_eul)
         return pose_eul   
 
 if (fisico == 1):
+    try:
+        robotat = robotat_connect()
+    except:
+        print("error")
     desfases = np.load('calibracion_markers_inicial.npy')
     desfases_euler = quat2eul(desfases,'zyx')
-    agents_pose = update_data()
+    agents_pose = update_data(robotat)
     for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
     
@@ -149,6 +165,7 @@ for i in range(0, cantO):
     posObsAct[1][i] = posObs[i].getSFVec3f()[1]
 
 sizeO = 3*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
+print(sizeO)
 #print(sizeO) 0.175m
 #print(Obstaculos)
 
@@ -236,15 +253,27 @@ while(cW1 > 1 or cW2 > 1):
         cW2 = cW2 + 1        
 
 Xi = X
-  
-# Asignar posiciones revisadas
-agent_setup = 5
-obs_active = 1
-initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
 for i in range(0, 3):
     if (obs_active == 0):
         posObs[i].setSFVec3f([-3.3, i*0.9, -6.39203e-05])
+    
+
+if (r_obs == 0):
+    for obs in range(0,cantO):
+        posObsAct[0][obs] = posObs[obs].getSFVec3f()[0]
+        posObsAct[1][obs] = posObs[obs].getSFVec3f()[1]
+    
+if (fisico == 1):
+    if (r_obs == 1):
+        for obs in range(0,cantO):
+            posObsAct[0][obs] = agents_pose[obs+obs_start_marker,0]
+            posObsAct[1][obs] = agents_pose[obs+obs_start_marker,1]
+            posObs[obs].setSFVec3f([agents_pose[obs+obs_start_marker,0], agents_pose[obs+obs_start_marker,1], -6.39203e-05])
+    if (r_obj == 1):
+        pObjVec[0] = agents_pose[obj_marker,0]
+        pObjVec[1] = agents_pose[obj_marker,1]
+        pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
 
 for b in range(0, NMax):
     if (b<NStart or b>=N):
@@ -372,19 +401,20 @@ while supervisor.step(TIME_STEP) != -1:
         #lock.acquire()
         
         try:#probar locks y quitar try
-            agents_pose = update_data()
+            agents_pose = update_data(robotat)
+            for marker in range(len(agents_pose)):
+                agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
         except:
             agents_pose = agents_pose_old
         agents_pose_old = agents_pose
         #lock.release()
         #agents_pose = update_data()
-        
-        for marker in range(len(agents_pose)):
-            agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
         if (r_obs == 1):
             for obs in range(0,cantO):
-                posObsAct[0][obs] = agents_pose[obs+10,0]
-                posObsAct[1][obs] = agents_pose[obs+10,1]
+                posObsAct[0][obs] = agents_pose[obs+obs_start_marker,0]
+                posObsAct[1][obs] = agents_pose[obs+obs_start_marker,1]
+                #posObs[obs].setSFVec3f([agents_pose[obs+obs_start_marker,0], agents_pose[obs+obs_start_marker,1], -6.39203e-05])
+
         
         if (r_obs == 0):
             for obs in range(0,cantO):
@@ -392,8 +422,9 @@ while supervisor.step(TIME_STEP) != -1:
                 posObsAct[1][obs] = posObs[obs].getSFVec3f()[1]
         
         if (r_obj == 1):
-            pObjVec[0] = agents_pose[0,0]
-            pObjVec[1] = agents_pose[0,1]
+            pObjVec[0] = agents_pose[obj_marker,0]
+            pObjVec[1] = agents_pose[obj_marker,1]
+            #pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
         
         if (r_obj == 0):
             pObjVec = pObj.getSFVec3f() 
@@ -440,7 +471,7 @@ while supervisor.step(TIME_STEP) != -1:
         # Collision avoidance con obstáculos
         for j in range(0,cantO):
             distO0 = posActuales[0,g] - posObsAct[0][j]
-            distO1 = posActuales[1,g] - posObsAct[0][j]  
+            distO1 = posActuales[1,g] - posObsAct[1][j]  
             mdistO = math.sqrt(distO0**2 + distO1**2) - sizeO
 
             if(abs(mdistO) < 0.0001):
@@ -490,12 +521,12 @@ while supervisor.step(TIME_STEP) != -1:
         #print(V)
         
     if (cambio == 3):
-        if (posActuales[0][NStart]-pObjVec[0] < 0.6):     
+        if ((posActuales[0][NStart]-pObjVec[0]) < 0.7 or (posActuales[1][NStart]-pObjVec[1]) < 0.7):     
             V[0][NStart] = V[0][NStart] - total_agent_weight*4*(posActuales[0][NStart]-pObjVec[0])
             V[1][NStart] = V[1][NStart] - total_agent_weight*4*(posActuales[1][NStart]-pObjVec[1])
-        elif (posActuales[0][NStart]-pObjVec[0] >= 0.6):
-            V[0][NStart] = V[0][NStart] - 10*(posActuales[0][NStart]-pObjVec[0])
-            V[1][NStart] = V[1][NStart] - 10*(posActuales[1][NStart]-pObjVec[1])
+        elif ((posActuales[0][NStart]-pObjVec[0]) >= 0.7 or (posActuales[1][NStart]-pObjVec[1]) >= 0.7):
+            V[0][NStart] = V[0][NStart] - 100*(posActuales[0][NStart]-pObjVec[0])
+            V[1][NStart] = V[1][NStart] - 100*(posActuales[1][NStart]-pObjVec[1])
     
 
     lock.acquire()
@@ -525,7 +556,9 @@ while supervisor.step(TIME_STEP) != -1:
         normV_data = np.array(normVHist) 
         obj_data = np.array(objHist) 
         obs_data = np.array(obsHist)
-        np.savez('trial0.npz', trajectory_data = trajectory_data, velocity_data = velocity_data, normV_data = normV_data, obj_data = obj_data, obs_data = obs_data, total_cycle = ciclo, form_cycle = form_cycle, obj_cycle = obj_cycle, quantO = cantO, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, N = N, pObjVec = pObjVec, PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, begin_alg_time = begin_alg_time, posIniPosVec = posIniPosVec, fisico = fisico, r_initial_conditions = r_initial_conditions, r_obs = r_obs, r_obj = r_obj, TIME_STEP = TIME_STEP, agent_setup = agent_setup, obs_active = obs_active, initial_pos_setup = initial_pos_setup, r = r, R = R, MAX_SPEED = MAX_SPEED, form_shape = form_shape, rigidity_level = rigidity_level, total_agent_number = total_agent_number, NMax = NMax)       
+        np.savez('trial0.npz', trajectory_data = trajectory_data, velocity_data = velocity_data, normV_data = normV_data, obj_data = obj_data, obs_data = obs_data, total_cycle = ciclo, form_cycle = form_cycle, obj_cycle = obj_cycle, quantO = cantO, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, N = N, pObjVec = pObjVec, PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, begin_alg_time = begin_alg_time, posIniPosVec = posIniPosVec, fisico = fisico, r_initial_conditions = r_initial_conditions, r_obs = r_obs, r_obj = r_obj, TIME_STEP = TIME_STEP, agent_setup = agent_setup, obs_active = obs_active, initial_pos_setup = initial_pos_setup, r = r, R = R, MAX_SPEED = MAX_SPEED, form_shape = form_shape, rigidity_level = rigidity_level, total_agent_number = total_agent_number, NMax = NMax, obj_marker = obj_marker, obs_start_marker = obs_start_marker)       
+        if (fisico == 1):
+            robotat_disconnect(robotat)
         lock.release()
         shm1.close()
         shm2.close()  

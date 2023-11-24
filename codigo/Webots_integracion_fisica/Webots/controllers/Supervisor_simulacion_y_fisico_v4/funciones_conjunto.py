@@ -27,7 +27,7 @@ def robotat_get_pose(tcp_obj, agent_id):
     try:
         # Clear any existing data
         #probar
-        tcp_obj.settimeout(0.1)
+        tcp_obj.settimeout(0.01)
         try:
             tcp_obj.recv(4096)
         except:

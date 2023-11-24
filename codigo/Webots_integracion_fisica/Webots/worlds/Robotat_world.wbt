@@ -88,7 +88,7 @@ DEF IniPos1 Solid {
   boundingObject USE BALL_SHAPE
 }
 DEF OBJ Solid {
-  translation 0.66 1.03 0.3
+  translation 1.06 1.52 0.3
   rotation 0 1 0 0
   children [
     DEF BALL_SHAPE Shape {
@@ -290,7 +290,7 @@ DEF IniPos10 Solid {
 E-puck {
   translation -2.64 0 0.25
   rotation 1 0 0 0
-  controller "Supervisor_simulacion_y_fisico_v3"
+  controller "Supervisor_simulacion_y_fisico_v4"
   controllerArgs [
     "Robot"
   ]

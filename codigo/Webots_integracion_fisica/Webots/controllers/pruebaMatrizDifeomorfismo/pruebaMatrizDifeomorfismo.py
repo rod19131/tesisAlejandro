@@ -23,14 +23,14 @@ from funciones_conjunto_3pi import *
 import time
 TIME_STEP = 64
 MAX_SPEED = 6.28
-MAX_SPEED_f = 30
+MAX_SPEED_f = 25
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
-fisico = 0
+fisico = 1
 NStart = 2
-N = 2
+N = 9
 
 if (fisico == 0):
 
@@ -125,18 +125,47 @@ if (fisico == 0):
         pass
     
 elif (fisico == 1):
-    # Dimensiones Pololu3Pi+
-    r = 0.017
-    l = 0.0485
-    a = 0.0485
+    # Dimensiones robot
+    r = 0.0205
+    l = 0.0355
+    a = 0.0355
+    r_f = 0.017
+    l_f = 0.0485
+    a_f = 0.0485
     
     # Robot instance.
     robot = Robot()
+    argc = int(robot.getCustomData())
     
+    agente = argc + 1
+    #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+    if (NStart <= agente <= N): 
+        try:
+            pololu = robotat_3pi_connect(agente)
+        except:
+            print("error, no se pudo conectar al pololu")
+            pass
+    """
+    elif (argc == 3):
+        try:
+            pololu = robotat_3pi_connect(agente)
+        except:
+            print("error, no se pudo conectar al pololu")
+            pass
+    """
     # Enable compass
+    ##compass = robot.getDevice("compass")
+    ##compass.enable(TIME_STEP)
     robot.step(TIME_STEP)
     
     # get a handler to the motors and set target position to infinity (speed control)
+    ##leftMotor = robot.getDevice('left wheel motor')
+    ##rightMotor = robot.getDevice('right wheel motor')
+    ##leftMotor.setPosition(float('inf'))
+    ##rightMotor.setPosition(float('inf'))
+    ##leftMotor.setVelocity(0)
+    ##rightMotor.setVelocity(0)
+    
     # Main loop:
     while robot.step(TIME_STEP) != -1:
         # Posiciones actuales y finales según Supervisor
@@ -170,36 +199,105 @@ elif (fisico == 1):
         # Velocidades
         
         # Orientación robot
-        theta_o = agents_pose[0][3]
+        ##comVal = compass.getValues()
+        ##angRad = math.atan2(comVal[0],comVal[1])
+        ##angDeg = (angRad/math.pi)*180
+        ##if(angDeg < 0):
+            ##angDeg = angDeg + 360
+        ##theta_o = angDeg
         
+        theta_o_f = agents_pose[argc][3]+90 #desfase de 90 grados por la orientación en la vida real
+        if(theta_o_f < 0):
+            thetha_o_f = theta_o_f + 360
     	# Transformación de velocidad lineal y velocidad angular
-        v = (V[0][0])*(math.cos(theta_o*math.pi/180)) + (V[1][0])*(math.sin(theta_o*math.pi/180))
-        w = (V[0][0])*(-math.sin(theta_o*math.pi/180)/a) + (V[1][0])*(math.cos(theta_o*math.pi/180)/a)
+        ##v = (V[0][argc])*(math.cos(theta_o*math.pi/180)) + (V[1][argc])*(math.sin(theta_o*math.pi/180))
+        ##w = (V[0][argc])*(-math.sin(theta_o*math.pi/180)/a) + (V[1][argc])*(math.cos(theta_o*math.pi/180)/a)
+        
+        # Transformación de velocidad lineal y velocidad angular
+        v_f = (V[0][argc])*(math.cos(theta_o_f*math.pi/180)) + (V[1][argc])*(math.sin(theta_o_f*math.pi/180))
+        w_f = (V[0][argc])*(-math.sin(theta_o_f*math.pi/180)/a_f) + (V[1][argc])*(math.cos(theta_o_f*math.pi/180)/a_f)
         
         # Cálculo de velocidades de las ruedas   
-        phi_r = (v+(w*l))/r
+        ##phi_r = (v+(w*l))/r
         # print(phi_r)
-        phi_l = (v-(w*l))/r
+        ##phi_l = (v-(w*l))/r
+        # print(phi_l)
+        
+        phi_r_f = (v_f+(w_f*l_f))/r_f
+        # print(phi_r)
+        phi_l_f = (v_f-(w_f*l_f))/r_f
         # print(phi_l)
         
         # Truncar velocidades a la velocidad maxima
-        if(phi_r > 0):
-            if(phi_r > MAX_SPEED):
-                phi_r = MAX_SPEED
-        else:
-            if(phi_r < -MAX_SPEED):
-                phi_r = -MAX_SPEED
+        ##if(phi_r > 0):
+            ##if(phi_r > MAX_SPEED):
+                ##phi_r = MAX_SPEED
+        ##else:
+            ##if(phi_r < -MAX_SPEED):
+                ##phi_r = -MAX_SPEED
                 
-        if(phi_l > 0):
-            if(phi_l > MAX_SPEED):
-                phi_l = MAX_SPEED
-        else:
-            if(phi_l < -MAX_SPEED):
-                phi_l = -MAX_SPEED
+        ##if(phi_l > 0):
+            ##if(phi_l > MAX_SPEED):
+               ## phi_l = MAX_SPEED
+        ##else:
+            ##if(phi_l < -MAX_SPEED):
+                ##phi_l = -MAX_SPEED
         
+        # Truncar velocidades a la velocidad maxima
+        if(phi_r_f > 0):
+            if(phi_r_f > MAX_SPEED_f):
+                phi_r_f = MAX_SPEED_f
+        else:
+            if(phi_r_f < -MAX_SPEED_f):
+                phi_r_f = -MAX_SPEED_f
+                
+        if(phi_l_f > 0):
+            if(phi_l_f > MAX_SPEED_f):
+                phi_l_f = MAX_SPEED_f
+        else:
+            if(phi_l_f < -MAX_SPEED_f):
+                phi_l_f = -MAX_SPEED_f
+    
     	# Asignación de velocidades a las ruedas
-        leftMotor.setVelocity(phi_l)
-        rightMotor.setVelocity(phi_r)
+        ##leftMotor.setVelocity(phi_l)
+        ##rightMotor.setVelocity(phi_r)
+        #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+        if (NStart <= agente <= N):
+            try:
+                robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
+                #time.sleep(1)
+            except:
+                #print("error, no se pudo conectar al pololu")
+                pass
+        """
+        elif (argc == 3):
+            try:
+                robotat_3pi_set_wheel_velocities(pololu, phi_l_f, phi_r_f)
+                #time.sleep(1)
+            except:
+                #print("error, no se pudo conectar al pololu")
+                pass
+        """
+            
+        if keyboard.is_pressed('a'):
+            #if (argc == 1 or argc == 2 or argc == 3 or argc == 4 or argc == 5 or argc == 6 or argc == 7 or argc == 8 or argc == 9):
+            if (NStart <= agente <= N):    
+                try:
+                    robotat_3pi_force_stop(pololu)
+                    robotat_3pi_disconnect(pololu)
+                except:
+                    #print("error, no se pudo conectar al pololu")
+                    pass
+            break
+            """
+            elif (argc == 3):
+                try:
+                    robotat_3pi_force_stop(pololu)
+                    robotat_3pi_disconnect(pololu)
+                except:
+                    #print("error, no se pudo conectar al pololu")
+                    pass
+            """
         pass
         
 elif (fisico == 2):

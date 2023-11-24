@@ -6,7 +6,7 @@ minimizedPerspectives: 000000ff00000000fd0000000300000000000001ca0000039ffc02000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 2 "controllers/Supervisor_simulacion_y_fisico_v2/Supervisor_simulacion_y_fisico_v2.py" "controllers/pruebaMatrizDifeomorfismo/pruebaMatrizDifeomorfismo.py" "controllers/Supervisor_simulacion_y_fisico_v3/Supervisor_simulacion_y_fisico_v3.py"
+textFiles: 1 "controllers/pruebaMatrizDifeomorfismo/pruebaMatrizDifeomorfismo.py" "controllers/Supervisor_simulacion_y_fisico_v3/Supervisor_simulacion_y_fisico_v3.py" "controllers/Supervisor_simulacion_y_fisico_v4/Supervisor_simulacion_y_fisico_v4.py" "controllers/Supervisor_simulacion_y_fisico_v4/funciones_conjunto.py"
 consoles: Console:All:All
 renderingDevicePerspectives: Agente0:camera;1;0.820513;0;0
 renderingDevicePerspectives: Agente10:camera;1;0.820513;0;0
