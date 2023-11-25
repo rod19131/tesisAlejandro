@@ -41,17 +41,17 @@ supervisor = Supervisor()
 
 fisico = 1  # 0 to use Webots, 1 to use Robotat
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
-r_obs = 1 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
-r_obj = 1 # 0 para objetivo virtual 1 para objetivo real
+r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
+r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
 
 # Matriz de formación
 form_shape = 1
 rigidity_level = 8
 """ AGENTES """
 NMax = 10
-NStart = 2
+NStart = 6
 NStart = NStart-1
-N = 9				# cantidad de agentes
+N = 6				# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4	
 setup_pos = np.zeros((NMax, 6))

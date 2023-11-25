@@ -23,14 +23,14 @@ from funciones_conjunto_3pi import *
 import time
 TIME_STEP = 64
 MAX_SPEED = 6.28
-MAX_SPEED_f = 25
+MAX_SPEED_f = 30
 #MAX_SPEED = 0.5
 shm1 = shared_memory.SharedMemory(name="my_shared_memory1")
 shm2 = shared_memory.SharedMemory(name="my_shared_memory2")
 lock = Lock()
 fisico = 1
-NStart = 2
-N = 9
+NStart = 6
+N = 6
 
 if (fisico == 0):
 

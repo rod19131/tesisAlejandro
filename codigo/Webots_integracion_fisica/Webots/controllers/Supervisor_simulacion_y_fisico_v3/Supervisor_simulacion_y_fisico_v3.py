@@ -49,7 +49,7 @@ form_shape = 1
 rigidity_level = 8
 """ AGENTES """
 NMax = 10
-NStart = 4
+NStart = 2
 NStart = NStart-1
 N = 6				# cantidad de agentes
 r = 0.07								 	# radio a considerar para evitar colisiones
