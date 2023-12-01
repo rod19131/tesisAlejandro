@@ -38,63 +38,94 @@ ciclo = 0
 TIME_STEP = 64
 # Se crea instancia de supervisor
 supervisor = Supervisor()
-
-fisico = 1  # 0 to use Webots, 1 to use Robotat
+"""real or not"""
+fisico = 0  # 0 to use Webots, 1 to use Robotat
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
+MAX_SPEED = 30						# velocidad máxima
 
 # Matriz de formación
 form_shape = 1
 rigidity_level = 8
 """ AGENTES """
 NMax = 10
-NStart = 6
-NStart = NStart-1
-N = 6				# cantidad de agentes
+NStart = 1
+N = 10				# cantidad de agentes
+"""radar"""
 r = 0.07								 	# radio a considerar para evitar colisiones
-R = 4	
-setup_pos = np.zeros((NMax, 6))
+R = 4	# rango del radar
+"""obstacles and objective"""
+obs_active = 1
+obj_marker = 1  
+obs_start_marker = 10
+robotat_markers = [1,2,3,4,5,6,7,8,9,10,11,12]
+"""initial positions"""
 setup_shape = 0
 setup_shape_space = 1.5
 # Specify the starting point
 setup_starting_point = np.array([-1.0, -1.5])
-
 # Asignar posiciones revisadas
 agent_setup = 5
-obs_active = 1
 initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
-if (setup_shape == 0):
-    for i in range(NStart,N):
-        setup_pos[i, 0] = setup_starting_point[0] + i * 0.3 
-        setup_pos[i, 1] = setup_starting_point[1] + i * 0.3 * 0
-        setup_pos[i, 2] = 0.5
+formation_edge = 0.3
 
-elif (setup_shape == 1):
-    for i in range(NStart,N):
-        angle = 2 * np.pi * i / (N-NStart)  # Calculate the angle for each marker
-        setup_shape_radius = setup_shape_space/2
-        setup_pos[i, 0] = setup_starting_point[0] + setup_shape_radius * np.cos(angle)  # x-coordinate
-        setup_pos[i, 1] = setup_starting_point[1] + setup_shape_radius * np.sin(angle)  # y-coordinate
-        setup_pos[i, 2] = 0.5  # constant z-coordinate
 
-"""    
-for i in range(3):
-    obs_pos[i, 0] = i * 0.3 -1.3
-    obs_pos[i, 1] = -1.5
-    obs_pos[i, 2] = 0.5
 """
+if (r_initial__conditions == 1):
+    desfases_euler = quat2eul(desfases,'zyx')
+    initial_data = np.load('trial_distance_1A_2.npz')
+    N = initial_data['N']
+    NStart = initial_data['NStart']
+    NStart = NStart-1
 
-								# rango del radar
-MAX_SPEED = 25						# velocidad máxima
+"""
+if (r_initial_conditions == 1):
+    initial_data = np.load('trialC5A_r_obs_obj_random_2.npz')
+    r_obs = initial_data['r_obs']
+    r_obj = initial_data['r_obj']
+    form_shape = initial_data['form_shape']
+    rigidity_level = initial_data['rigidity_level']
+    NMax = initial_data['NMax']
+    N = initial_data['N']
+    NStart = initial_data['NStart']
+    r = initial_data['r']
+    R = initial_data['R']
+    obs_active = initial_data['obs_active']
+    obj_marker = initial_data['obj_marker']
+    obs_start_marker = initial_data['obs_start_marker']
+    robotat_markers = -1
+    #setup_shape = initial_data['setup_shape']
+    #setup_shape_space = initial_data['setup_shape_space']
+    #setup_starting_point = initial_data['setup_starting_point']
+    #agent_setup = initial_data['agent_setup']
+    #initial_pos_setup = initial_data['initial_pos_setup']
+
+if (fisico == 0):
+    MAX_SPEED = 6.28   
+
+setup_pos = np.zeros((NMax, 6))
+NStart = NStart-1
 total_agent_number = N-NStart
-total_agent_weight = (N-NStart)/NMax
-begin_alg_time = 400 # valor arbitrario para inicializar variable    
-obj_marker = 1  
-obs_start_marker = 10
+total_agent_weight = (total_agent_number)/NMax
+begin_alg_time = -1 # valor arbitrario para inicializar variable    
 obs_start_marker = obs_start_marker - 1 
 obj_marker = obj_marker - 1 
+if (r_initial_conditions == 0):
+    if (setup_shape == 0):
+        for i in range(NStart,N):
+            setup_pos[i, 0] = setup_starting_point[0] + i * 0.3 
+            setup_pos[i, 1] = setup_starting_point[1] + i * 0.3 * 0
+            setup_pos[i, 2] = 0.5
+    
+    elif (setup_shape == 1):
+        for i in range(NStart,N):
+            angle = 2 * np.pi * i / (total_agent_number)  # Calculate the angle for each marker
+            setup_shape_radius = setup_shape_space/2
+            setup_pos[i, 0] = setup_starting_point[0] + setup_shape_radius * np.cos(angle)  # x-coordinate
+            setup_pos[i, 1] = setup_starting_point[1] + setup_shape_radius * np.sin(angle)  # y-coordinate
+            setup_pos[i, 2] = 0.5  # constant z-coordinate
 
 if(r_obj == 0):
    obj_marker = -1 
@@ -107,20 +138,27 @@ velocityHist = []
 normVHist = []
 objHist = []
 obsHist = []
+formation_mseHist = []
 PosRealAgents = 0
 RotRealAgents = 0 
-form_cycle = 0
-obj_cycle = 0
+form_cycle = -1
+obj_cycle = -1
 agents_pose = []
 
-def update_data(robotat):
+"""    
+for i in range(3):
+    obs_pos[i, 0] = i * 0.3 -1.3
+    obs_pos[i, 1] = -1.5
+    obs_pos[i, 2] = 0.5
+"""					
+
+def update_data(robotat, markers_to_use):
     try: 
         if robotat:
             #print(robotat)
-            agentes = [1,2,3,4,5,6,7,8,9,10,11,12]
-            n_ag = len(agentes)
+            n_ag = len(markers_to_use)
             #print("Number of agents:\n",n_ag)
-            pose = robotat_get_pose(robotat, agentes)
+            pose = robotat_get_pose(robotat, markers_to_use)
             pose_eul = quat2eul(pose,'zyx')
         else: 
             print("no connection?")
@@ -139,7 +177,7 @@ if (fisico == 1):
         print("error")
     desfases = np.load('calibracion_markers_inicial.npy')
     desfases_euler = quat2eul(desfases,'zyx')
-    agents_pose = update_data(robotat)
+    agents_pose = update_data(robotat,robotat_markers)
     for marker in range(len(agents_pose)):
             agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
     
@@ -215,8 +253,8 @@ X = np.empty([2,N])
 # Asignar posiciones random a cada agente
 for a in range(0, NMax):
     if a in range(NStart,N):
-        X[0,a] = random.uniform(sizeVec[1]/2-0.4,-sizeVec[1]/2+0.4) #0.4 para que el carro no esté pegado a la pared
-        X[1,a] = random.uniform(sizeVec[0]/2-0.4,-sizeVec[0]/2+0.4)
+        X[0,a] = random.uniform(sizeVec[1]/2-0.5,-sizeVec[1]/2+0.5) #0.4 para que el carro no esté pegado a la pared
+        X[1,a] = random.uniform(sizeVec[0]/2-0.5,-sizeVec[0]/2+0.5)
 
 print("X",X)
 
@@ -279,7 +317,7 @@ for b in range(0, NMax):
     if (b<NStart or b>=N):
         PosTodos[b].setSFVec3f([-2.3, b*0.3, 0.3])
         posIniPos[b].setSFVec3f([-2.3, b*0.3, -6.39203e-05])
-
+"""
 if (r_initial_conditions == 1):
     desfases = np.load('calibracion_markers_inicial.npy')
     desfases_euler = quat2eul(desfases,'zyx')
@@ -292,6 +330,15 @@ if (r_initial_conditions == 1):
     N = initial_data['N']
     NStart = initial_data['NStart']
     pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
+"""
+if (r_initial_conditions == 1):
+    PosRealAgents = initial_data['PosRealAgents']
+    RotRealAgents = initial_data['RotRealAgents']
+    PosRealIniPosVec = initial_data['posIniPosVec']
+    posObsAct = initial_data['posObsAct']
+    pObjVec = initial_data['pObjVec']
+    obj_data = initial_data['obj_data']
+    obs_data = initial_data['obs_data']
 
 if (r_initial_conditions == 1):
     for i in range(0, cantO):
@@ -401,7 +448,7 @@ while supervisor.step(TIME_STEP) != -1:
         #lock.acquire()
         
         try:#probar locks y quitar try
-            agents_pose = update_data(robotat)
+            agents_pose = update_data(robotat,robotat_markers)
             for marker in range(len(agents_pose)):
                 agents_pose[marker,3] = agents_pose[marker,3] - desfases_euler[marker,3]
         except:
@@ -447,7 +494,7 @@ while supervisor.step(TIME_STEP) != -1:
         for h in range(NStart,N):
             dist = np.asarray([posActuales[0][g]-posActuales[0][h], posActuales[1][g]-posActuales[1][h]])	# vector xi - xj   
             mdist = math.sqrt(dist[0]**2 + dist[1]**2)														# norma euclidiana vector xi - xj
-            dij = 0.3*d[g][h]																				# distancia deseada entre agentes i y j
+            dij = formation_edge*d[g][h]																				# distancia deseada entre agentes i y j
             
 			# Peso añadido a la ecuación de consenso
             if(mdist == 0 or mdist >= R):
@@ -492,6 +539,9 @@ while supervisor.step(TIME_STEP) != -1:
     normV = math.sqrt(normV2)
     print("normV", normV)
     
+    actual_adjacency = (1/formation_edge)*funciones.DistBetweenAgents(posActuales,NStart,N) 
+    formation_mse = funciones.FormationError(actual_adjacency, Fmatrix(form_shape,rigidity_level),NStart,N)
+    
     if(normV < 0.5 and cambio == 1):
         form_cycle = ciclo
         cambio = 2
@@ -512,7 +562,7 @@ while supervisor.step(TIME_STEP) != -1:
         if (ready_ini_pos == cont_N):
             begin_alg_time = ciclo
             cambio = 1
-            if (r_initial_conditions == 1):
+            if (fisico == 1):
                 for b in range(NStart, N):
                     PosTodosVec[b] = [agents_pose[b,0], agents_pose[b,1], -6.39203e-05]
                     RotTodosVec[b] = [0, 0, 1, agents_pose[b,3]]
@@ -521,14 +571,14 @@ while supervisor.step(TIME_STEP) != -1:
         #print(V)
         
     if (cambio == 3):
-        if ((posActuales[0][NStart]-pObjVec[0]) < 0.7 or (posActuales[1][NStart]-pObjVec[1]) < 0.7):     
-            V[0][NStart] = V[0][NStart] - total_agent_weight*4*(posActuales[0][NStart]-pObjVec[0])
-            V[1][NStart] = V[1][NStart] - total_agent_weight*4*(posActuales[1][NStart]-pObjVec[1])
-        elif ((posActuales[0][NStart]-pObjVec[0]) >= 0.7 or (posActuales[1][NStart]-pObjVec[1]) >= 0.7):
-            V[0][NStart] = V[0][NStart] - 100*(posActuales[0][NStart]-pObjVec[0])
-            V[1][NStart] = V[1][NStart] - 100*(posActuales[1][NStart]-pObjVec[1])
+        if (abs(posActuales[0][NStart]-pObjVec[0]) > 0.7 or abs(posActuales[1][NStart]-pObjVec[1]) > 0.7):     
+            V[0][NStart] = V[0][NStart] - total_agent_weight*(1/(formation_mse))*(posActuales[0][NStart]-pObjVec[0])
+            V[1][NStart] = V[1][NStart] - total_agent_weight*(1/(formation_mse))*(posActuales[1][NStart]-pObjVec[1])
+        elif (abs(posActuales[0][NStart]-pObjVec[0]) <= 0.7 or abs(posActuales[1][NStart]-pObjVec[1]) <= 0.7):
+            V[0][NStart] = V[0][NStart] - 10*(posActuales[0][NStart]-pObjVec[0])
+            V[1][NStart] = V[1][NStart] - 10*(posActuales[1][NStart]-pObjVec[1])
     
-
+#1/(errorF*10) o 4
     lock.acquire()
     pick_V = pickle.dumps(V)
     shm1.buf[:len(pick_V)] = pick_V
@@ -540,8 +590,10 @@ while supervisor.step(TIME_STEP) != -1:
     normVHist.append(normV)
     objHist.append(pObjVec)
     obsHist.append(posObsAct.copy())
+    formation_mseHist.append(formation_mse)
     print(ciclo)
-    print(cambio)    
+    print(cambio) 
+    print(formation_mse)  
     ciclo = ciclo + 1     
     
     if keyboard.is_pressed('a'):
@@ -556,12 +608,55 @@ while supervisor.step(TIME_STEP) != -1:
         normV_data = np.array(normVHist) 
         obj_data = np.array(objHist) 
         obs_data = np.array(obsHist)
-        np.savez('trial0.npz', trajectory_data = trajectory_data, velocity_data = velocity_data, normV_data = normV_data, obj_data = obj_data, obs_data = obs_data, total_cycle = ciclo, form_cycle = form_cycle, obj_cycle = obj_cycle, quantO = cantO, posObsAct = posObsAct, sizeO = sizeO, NStart = NStart, N = N, pObjVec = pObjVec, PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, begin_alg_time = begin_alg_time, posIniPosVec = posIniPosVec, fisico = fisico, r_initial_conditions = r_initial_conditions, r_obs = r_obs, r_obj = r_obj, TIME_STEP = TIME_STEP, agent_setup = agent_setup, obs_active = obs_active, initial_pos_setup = initial_pos_setup, r = r, R = R, MAX_SPEED = MAX_SPEED, form_shape = form_shape, rigidity_level = rigidity_level, total_agent_number = total_agent_number, NMax = NMax, obj_marker = obj_marker, obs_start_marker = obs_start_marker)       
+        formation_mse_data = np.array(formation_mseHist)
+        NStart = NStart + 1
+        obs_start_marker = obs_start_marker + 1 
+        obj_marker = obj_marker + 1 
+        np.savez('trial0.npz', trajectory_data = trajectory_data,\
+                               velocity_data = velocity_data,\
+                               normV_data = normV_data,\
+                               obj_data = obj_data,\
+                               obs_data = obs_data,\
+                               formation_mse_data = formation_mse_data,\
+                               total_cycle = ciclo,\
+                               form_cycle = form_cycle,\
+                               obj_cycle = obj_cycle,\
+                               quantO = cantO,\
+                               posObsAct = posObsAct,\
+                               sizeO = sizeO,\
+                               NStart = NStart,\
+                               N = N,\
+                               NMax = NMax,\
+                               pObjVec = pObjVec,\
+                               PosRealAgents = PosRealAgents,\
+                               RotRealAgents = RotRealAgents,\
+                               begin_alg_time = begin_alg_time,\
+                               posIniPosVec = posIniPosVec,\
+                               fisico = fisico,\
+                               r_initial_conditions = r_initial_conditions,\
+                               r_obs = r_obs,\
+                               r_obj = r_obj,\
+                               TIME_STEP = TIME_STEP,\
+                               agent_setup = agent_setup,\
+                               obs_active = obs_active,\
+                               initial_pos_setup = initial_pos_setup,\
+                               r = r,\
+                               R = R,\
+                               MAX_SPEED = MAX_SPEED,\
+                               form_shape = form_shape,\
+                               rigidity_level = rigidity_level,\
+                               total_agent_number = total_agent_number,\
+                               obj_marker = obj_marker,\
+                               obs_start_marker = obs_start_marker,\
+                               setup_starting_point = setup_starting_point,\
+                               setup_shape = setup_shape,\
+                               setup_shape_space = setup_shape_space,\
+                               formation_edge = formation_edge)       
         if (fisico == 1):
             robotat_disconnect(robotat)
         lock.release()
-        shm1.close()
-        shm2.close()  
+        #shm1.close()
+        #shm2.close()  
         break
 
     

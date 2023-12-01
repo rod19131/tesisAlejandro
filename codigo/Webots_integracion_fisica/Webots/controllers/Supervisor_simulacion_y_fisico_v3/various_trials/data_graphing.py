@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trial_distance_1A_2.npz')
+data = np.load('trial_distance_1A_v_2.npz')
 #print(data)
 
 #to find out the files within the .npz
