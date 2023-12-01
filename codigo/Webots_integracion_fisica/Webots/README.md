@@ -1,5 +1,6 @@
-
 # Webots
+![alt text](https://github.com/rod19131/tesisAlejandro/blob/main/Documentos/figuras/mundoRobotat.JPG)
+
 
 Las carpetas principales son controllers y worlds.
 
