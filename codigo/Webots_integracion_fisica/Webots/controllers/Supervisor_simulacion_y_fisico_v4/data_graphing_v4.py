@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trial_C5A_r_obs_obj.npz')
+data = np.load('trial0.npz')
 #print(data)
 
 #to find out the files within the .npz
@@ -47,7 +47,7 @@ total_agent_number = data['total_agent_number']
 NMax = data['NMax']
 obj_marker = data['obj_marker']
 obs_start_marker = data['obs_start_marker']
-graphCycleStart = obj_cycle
+graphCycleStart = begin_alg_time
 graphCycleEnd = ciclos
 
 # Extract x and y coordinates for each element
@@ -76,6 +76,7 @@ diam_agente = 0.0375 #diametro promedio agentes
 num_agents = x_positions.shape[1]  # Get the number of agents
 print(NStart)
 print(N)
+NStart = NStart - 1
 labels = [f'Agente {i + 1}' for i in range(NStart,num_agents)] 
 #labels = [f'Agente {i}' for i in range(NStart,N+1)] 
 #NStart_calc = NStart-1

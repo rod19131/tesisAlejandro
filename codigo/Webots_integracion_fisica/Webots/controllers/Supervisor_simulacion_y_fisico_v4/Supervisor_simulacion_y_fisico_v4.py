@@ -39,10 +39,10 @@ TIME_STEP = 64
 # Se crea instancia de supervisor
 supervisor = Supervisor()
 """real or not"""
-fisico = 0  # 0 to use Webots, 1 to use Robotat
+fisico = 1  # 0 to use Webots, 1 to use Robotat
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
-r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
-r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
+r_obs = 1 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
+r_obj = 1 # 0 para objetivo virtual 1 para objetivo real
 MAX_SPEED = 30						# velocidad máxima
 
 # Matriz de formación
@@ -51,13 +51,13 @@ rigidity_level = 8
 """ AGENTES """
 NMax = 10
 NStart = 1
-N = 10				# cantidad de agentes
+N = 6				# cantidad de agentes
 """radar"""
 r = 0.07								 	# radio a considerar para evitar colisiones
 R = 4	# rango del radar
 """obstacles and objective"""
 obs_active = 1
-obj_marker = 1  
+obj_marker = 9  
 obs_start_marker = 10
 robotat_markers = [1,2,3,4,5,6,7,8,9,10,11,12]
 """initial positions"""
@@ -546,10 +546,10 @@ while supervisor.step(TIME_STEP) != -1:
         form_cycle = ciclo
         cambio = 2
     
-    elif(normV < 2 and cambio == 2):
+    elif(formation_mse < 0.15 and cambio == 2):
         obj_cycle = ciclo
         cambio = 3    
-    
+#normV <2
     if (cambio == 0):
         ready_ini_pos = 0
         cont_N = 0
