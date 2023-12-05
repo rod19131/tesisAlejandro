@@ -41,8 +41,8 @@ supervisor = Supervisor()
 """real or not"""
 fisico = 1  # 0 to use Webots, 1 to use Robotat
 r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
-r_obs = 1 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
-r_obj = 1 # 0 para objetivo virtual 1 para objetivo real
+r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
+r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
 MAX_SPEED = 30						# velocidad máxima
 
 # Matriz de formación
@@ -71,6 +71,10 @@ initial_pos_setup = 1 #inicialización de markers 0: aleatorio 1: planificado
 
 formation_edge = 0.3
 
+#robot dimensions
+r_f = 0.017
+l_f = 0.0485
+a_f = 0.0485
 
 """
 if (r_initial__conditions == 1):
@@ -82,7 +86,8 @@ if (r_initial__conditions == 1):
 
 """
 if (r_initial_conditions == 1):
-    initial_data = np.load('trialC5A_r_obs_obj_random_2.npz')
+    initial_data = np.load('trial0.npz')
+    ciclo = initial_data['begin_alg_time']
     r_obs = initial_data['r_obs']
     r_obj = initial_data['r_obj']
     form_shape = initial_data['form_shape']
@@ -96,14 +101,17 @@ if (r_initial_conditions == 1):
     obj_marker = initial_data['obj_marker']
     obs_start_marker = initial_data['obs_start_marker']
     robotat_markers = -1
-    #setup_shape = initial_data['setup_shape']
-    #setup_shape_space = initial_data['setup_shape_space']
-    #setup_starting_point = initial_data['setup_starting_point']
-    #agent_setup = initial_data['agent_setup']
-    #initial_pos_setup = initial_data['initial_pos_setup']
+    setup_shape = initial_data['setup_shape']
+    setup_shape_space = initial_data['setup_shape_space']
+    setup_starting_point = initial_data['setup_starting_point']
+    agent_setup = initial_data['agent_setup']
+    initial_pos_setup = initial_data['initial_pos_setup']
 
 if (fisico == 0):
-    MAX_SPEED = 6.28   
+    MAX_SPEED = 6.28 
+    r_f = 0.0205
+    l_f = 0.0355
+    a_f = 0.0355  
 
 setup_pos = np.zeros((NMax, 6))
 NStart = NStart-1
@@ -139,6 +147,7 @@ normVHist = []
 objHist = []
 obsHist = []
 formation_mseHist = []
+rotHist = []
 PosRealAgents = 0
 RotRealAgents = 0 
 form_cycle = -1
@@ -420,7 +429,7 @@ pObj.setSFVec3f([setup_pos[len(setup_pos)-1,0], setup_pos[len(setup_pos)-1,1], -
 """
 # Posiciones actuales
 posActuales = np.zeros([2,N])
-
+rotActuales = np.zeros([1,N])
 
 # Matriz de velocidades
 V = np.zeros([2,N])
@@ -482,11 +491,18 @@ while supervisor.step(TIME_STEP) != -1:
     for c in range(NStart,N):
         if (fisico == 0):
             posC = Agents[c].getField("translation")
+            rotC = Agents[c].getField("rotation")
             posActuales[0][c] = posC.getSFVec3f()[0]
             posActuales[1][c] = posC.getSFVec3f()[1]
+            rotActuales[0][c] = rotC.getSFVec3f()[3]*180/math.pi
+            
         elif (fisico == 1):
             posActuales[0][c] = agents_pose[c][0]
-            posActuales[1][c] = agents_pose[c][1]    
+            posActuales[1][c] = agents_pose[c][1]  
+            rotActuales[0][c] = agents_pose[c][3]+90
+                
+        if(rotActuales[0][c] < 0):
+                rotActuales[0][c] = rotActuales[0][c] + 360   
     
     for g in range(NStart,N):
         E0 = 0
@@ -546,7 +562,7 @@ while supervisor.step(TIME_STEP) != -1:
         form_cycle = ciclo
         cambio = 2
     
-    elif(formation_mse < 0.15 and cambio == 2):
+    elif(formation_mse < 0.5 and cambio == 2):
         obj_cycle = ciclo
         cambio = 3    
 #normV <2
@@ -591,9 +607,10 @@ while supervisor.step(TIME_STEP) != -1:
     objHist.append(pObjVec)
     obsHist.append(posObsAct.copy())
     formation_mseHist.append(formation_mse)
+    rotHist.append(rotActuales.copy())
     print(ciclo)
     print(cambio) 
-    print(formation_mse)  
+    #print(formation_mse)  
     ciclo = ciclo + 1     
     
     if keyboard.is_pressed('a'):
@@ -609,15 +626,17 @@ while supervisor.step(TIME_STEP) != -1:
         obj_data = np.array(objHist) 
         obs_data = np.array(obsHist)
         formation_mse_data = np.array(formation_mseHist)
+        rot_data = np.array(rotHist)
         NStart = NStart + 1
         obs_start_marker = obs_start_marker + 1 
         obj_marker = obj_marker + 1 
-        np.savez('trial0.npz', trajectory_data = trajectory_data,\
+        np.savez('trial02.npz', trajectory_data = trajectory_data,\
                                velocity_data = velocity_data,\
                                normV_data = normV_data,\
                                obj_data = obj_data,\
                                obs_data = obs_data,\
                                formation_mse_data = formation_mse_data,\
+                               rot_data = rot_data,\
                                total_cycle = ciclo,\
                                form_cycle = form_cycle,\
                                obj_cycle = obj_cycle,\
@@ -651,7 +670,10 @@ while supervisor.step(TIME_STEP) != -1:
                                setup_starting_point = setup_starting_point,\
                                setup_shape = setup_shape,\
                                setup_shape_space = setup_shape_space,\
-                               formation_edge = formation_edge)       
+                               formation_edge = formation_edge,\
+                               r_f = r_f,\
+                               l_f = l_f,\
+                               a_f = a_f)       
         if (fisico == 1):
             robotat_disconnect(robotat)
         lock.release()

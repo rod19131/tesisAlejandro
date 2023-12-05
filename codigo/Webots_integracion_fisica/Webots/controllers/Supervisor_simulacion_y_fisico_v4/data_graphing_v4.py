@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import math
 #trajectory = np.load('robot_trajec.npy')
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trial0.npz')
+data = np.load('trial02.npz')
+
 #print(data)
 
 #to find out the files within the .npz
@@ -13,8 +15,12 @@ data = np.load('trial0.npz')
 data = np.load('trial.npz', allow_pickle=True)
 print(data.files)
 """
-
+fisico = data['fisico']
 trajectory_data = data['trajectory_data']
+rot_data = data['rot_data']
+r_f = data['r_f']
+l_f = data['l_f']
+a_f = data['a_f']
 velocity_data = data['velocity_data']
 normV_data = data['normV_data']
 obj_data = data['obj_data']
@@ -147,6 +153,91 @@ legend.set_bbox_to_anchor((0.99, 1))
 
 plt.grid()
 
+
+plt.figure()
+
+phi = np.zeros([2,N])
+phi_data = []
+#print(rot_data)
+
+for cyc in range(0, total_cycle):
+    #print((rot_data[cyc][0][1]))
+    
+    if (fisico == 0):
+        r_f = 0.0205
+        l_f = 0.0355
+        a_f = 0.0355
+    elif (fisico == 1):   
+        r_f = 0.017
+        l_f = 0.0485
+        a_f = 0.0485
+    for argc in range(NStart,num_agents):
+        v = (velocity_data[cyc][0][argc])*(math.cos(rot_data[cyc][0][argc]*math.pi/180)) + (velocity_data[cyc][1][argc])*(math.sin(rot_data[cyc][0][argc]*math.pi/180))
+        w = (velocity_data[cyc][0][argc])*(-math.sin(rot_data[cyc][0][argc]*math.pi/180)/a_f) + (velocity_data[cyc][1][argc])*(math.cos(rot_data[cyc][0][argc]*math.pi/180)/a_f)
+        
+        # Cálculo de velocidades de las ruedas   
+        phi_r = (v+(w*l_f))/r_f
+        # print(phi_r)
+        phi_l = (v-(w*l_f))/r_f
+        # print(phi_l)
+        
+        # Truncar velocidades a la velocidad maxima
+        if(phi_r > 0):
+            if(phi_r > MAX_SPEED):
+                phi_r = MAX_SPEED
+        else:
+            if(phi_r < -MAX_SPEED):
+                phi_r = -MAX_SPEED
+                
+        if(phi_l > 0):
+            if(phi_l > MAX_SPEED):
+                phi_l = MAX_SPEED
+        else:
+            if(phi_l < -MAX_SPEED):
+                phi_l = -MAX_SPEED
+        
+        phi[0][argc] = phi_r
+        phi[1][argc] = phi_l
+        phi_data.append(phi.copy())
+phi_data_array = np.array(phi_data)
+
+phi_r_data = phi_data_array[:, 0, :]
+#print(phi_r_data)
+phi_l_data = phi_data_array[:, 1, :]
+
+plt.plot(time_steps,phi_r_data[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.ylim([-40, 40])
+# naming the x axis
+plt.xlabel('t (ciclos)')
+# naming the y axis
+plt.ylabel('Phi R (rpm)')
+  
+# giving a title to my graph
+plt.title('Velocidades R')
+
+legend = plt.legend()
+for text in legend.get_texts():
+    text.set_fontsize(7)
+
+plt.subplots_adjust(right=0.8)
+legend.set_bbox_to_anchor((0.99, 1))
+plt.figure()
+plt.plot(time_steps,phi_l_data[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.ylim([-40, 40])
+# naming the x axis
+plt.xlabel('t (ciclos)')
+# naming the y axis
+ 
+# giving a title to my graph
+plt.title('Velocidades L')
+
+legend = plt.legend()
+for text in legend.get_texts():
+    text.set_fontsize(7)
+
+plt.subplots_adjust(right=0.8)
+legend.set_bbox_to_anchor((0.99, 1))
+
 # function to show the plot
 plt.show()
 # Create a figure and axis
@@ -160,7 +251,7 @@ scatter_goal = ax.scatter([], [], marker='*', color='yellow', label='Objetivo', 
 scatter_obstacles = ax.scatter([], [], marker='o', color='purple', label='Obstáculos', zorder=3, s = sizeO/factor_m)
 
 # Plot the initial positions
-scatter_agents.set_offsets(np.column_stack([x_positions[graphCycleStart, NStart:N], y_positions[graphCycleStart, NStart:N]]))
+scatter_agents.set_offsets(np.column_stack([x_positions[graphCycleStart:graphCycleEnd, NStart:N], y_positions[graphCycleStart:graphCycleEnd, NStart:N]]))
 scatter_goal.set_offsets(np.column_stack([x_pObjVec, y_pObjVec]))
 scatter_obstacles.set_offsets(np.column_stack([x_posObsAct, y_posObsAct]))
 
@@ -171,7 +262,7 @@ def update(frame):
     scatter_obstacles.set_offsets(np.column_stack([x_posObsAct, y_posObsAct]))
 
 # Create the animation
-animation = FuncAnimation(fig, update, frames=np.arange(graphCycleStart, graphCycleEnd+1, 8), interval = 50, blit=False)
+animation = FuncAnimation(fig, update, frames=np.arange(graphCycleStart, graphCycleEnd, 8), interval = 50, blit=False)
 
 # Display the plot
 plt.xlabel('Eje x (m)')

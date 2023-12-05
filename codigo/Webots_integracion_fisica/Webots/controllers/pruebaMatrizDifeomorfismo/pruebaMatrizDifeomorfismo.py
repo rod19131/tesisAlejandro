@@ -223,9 +223,9 @@ elif (fisico == 1):
         ##phi_l = (v-(w*l))/r
         # print(phi_l)
         
-        phi_r_f = (v_f+(w_f*l_f))/r_f
+        phi_r_f = (v_f+(w_f*l_f))*10/(r_f*10)
         # print(phi_r)
-        phi_l_f = (v_f-(w_f*l_f))/r_f
+        phi_l_f = (v_f-(w_f*l_f))*10/(r_f*10)
         # print(phi_l)
         
         # Truncar velocidades a la velocidad maxima
