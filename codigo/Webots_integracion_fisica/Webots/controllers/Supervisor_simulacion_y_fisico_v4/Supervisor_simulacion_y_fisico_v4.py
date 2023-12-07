@@ -39,8 +39,8 @@ TIME_STEP = 64
 # Se crea instancia de supervisor
 supervisor = Supervisor()
 """real or not"""
-fisico = 1  # 0 to use Webots, 1 to use Robotat
-r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
+fisico = 0  # 0 to use Webots, 1 to use Robotat
+r_initial_conditions = 1 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
 MAX_SPEED = 30						# velocidad máxima
@@ -86,7 +86,7 @@ if (r_initial__conditions == 1):
 
 """
 if (r_initial_conditions == 1):
-    initial_data = np.load('trial0.npz')
+    initial_data = np.load('finaltrial_6A_AAA_f_2.npz')
     ciclo = initial_data['begin_alg_time']
     r_obs = initial_data['r_obs']
     r_obj = initial_data['r_obj']
@@ -152,7 +152,10 @@ PosRealAgents = 0
 RotRealAgents = 0 
 form_cycle = -1
 obj_cycle = -1
+obj_success_cycle = -1
+obj_success = 0
 agents_pose = []
+obj_cont = 0
 
 """    
 for i in range(3):
@@ -593,7 +596,12 @@ while supervisor.step(TIME_STEP) != -1:
         elif (abs(posActuales[0][NStart]-pObjVec[0]) <= 0.7 or abs(posActuales[1][NStart]-pObjVec[1]) <= 0.7):
             V[0][NStart] = V[0][NStart] - 10*(posActuales[0][NStart]-pObjVec[0])
             V[1][NStart] = V[1][NStart] - 10*(posActuales[1][NStart]-pObjVec[1])
-    
+        
+        if (abs(posActuales[0][NStart]-pObjVec[0]) <= 0.5 and abs(posActuales[1][NStart]-pObjVec[1]) <= 0.5):
+            obj_success = 1
+            if (obj_cont == 0):
+                obj_success_cycle = ciclo
+            obj_cont = 1
 #1/(errorF*10) o 4
     lock.acquire()
     pick_V = pickle.dumps(V)
@@ -630,7 +638,7 @@ while supervisor.step(TIME_STEP) != -1:
         NStart = NStart + 1
         obs_start_marker = obs_start_marker + 1 
         obj_marker = obj_marker + 1 
-        np.savez('trial02.npz', trajectory_data = trajectory_data,\
+        np.savez('finaltrial_6A_ADD_f_4.npz', trajectory_data = trajectory_data,\
                                velocity_data = velocity_data,\
                                normV_data = normV_data,\
                                obj_data = obj_data,\
@@ -673,7 +681,9 @@ while supervisor.step(TIME_STEP) != -1:
                                formation_edge = formation_edge,\
                                r_f = r_f,\
                                l_f = l_f,\
-                               a_f = a_f)       
+                               a_f = a_f,\
+                               obj_success = obj_success,\
+                               obj_success_cycle = obj_success_cycle)       
         if (fisico == 1):
             robotat_disconnect(robotat)
         lock.release()

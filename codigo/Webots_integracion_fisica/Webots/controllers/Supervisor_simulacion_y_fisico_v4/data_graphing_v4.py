@@ -2,11 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import math
+from prettytable import PrettyTable
 #trajectory = np.load('robot_trajec.npy')
 #trajectory = np.load('trial.npy')
 #trajectory = np.load('setup_traj0_formacion_2.npy')
 
-data = np.load('trial02.npz')
+archivo = 'finaltrial_6A_AB1B_f_1.npz'
+
+data = np.load(archivo)
 
 #print(data)
 
@@ -16,20 +19,20 @@ data = np.load('trial.npz', allow_pickle=True)
 print(data.files)
 """
 fisico = data['fisico']
-trajectory_data = data['trajectory_data']
-rot_data = data['rot_data']
 r_f = data['r_f']
 l_f = data['l_f']
 a_f = data['a_f']
+trajectory_data = data['trajectory_data']
+rot_data = data['rot_data']
 velocity_data = data['velocity_data']
 normV_data = data['normV_data']
+formation_mse_data = data['formation_mse_data']
 obj_data = data['obj_data']
 obs_data = data['obs_data']
 total_cycle = data['total_cycle']
 form_cycle = data['form_cycle']
 obj_cycle = data['obj_cycle']
 quantO = data['quantO']
-ciclos = data['total_cycle']
 posObsAct = data['posObsAct']
 sizeO = data['sizeO']
 NStart = data['NStart']
@@ -53,9 +56,12 @@ total_agent_number = data['total_agent_number']
 NMax = data['NMax']
 obj_marker = data['obj_marker']
 obs_start_marker = data['obs_start_marker']
+obj_success = data['obj_success']
+obj_success_cycle = data['obj_success_cycle']
 graphCycleStart = begin_alg_time
-graphCycleEnd = ciclos
+graphCycleEnd = total_cycle
 
+print(obj_success_cycle)
 # Extract x and y coordinates for each element
 x_positions = trajectory_data[:, 0, :]
 y_positions = trajectory_data[:, 1, :]
@@ -77,7 +83,7 @@ plt.xlim(-1.9, 1.9)  # Set the x-axis limits (from 0 to 6)
 plt.ylim(-2.4, 2.4)  # Set the y-axis limits (from 0 to 6)
 
 factor_m = 0.0003528 # m por punto de scatter
-diam_agente = 0.0375 #diametro promedio agentes
+diam_agente = l_f #diametro promedio agentes
 
 num_agents = x_positions.shape[1]  # Get the number of agents
 print(NStart)
@@ -107,12 +113,14 @@ for text in legend.get_texts():
     text.set_fontsize(7)
 
 plt.subplots_adjust(right=0.8)
-legend.set_bbox_to_anchor((0.99, 1))
+legend.set_bbox_to_anchor((1.31, 1))
 plt.grid()
 plt.figure()
 
 # velocityHist in x
 plt.plot(time_steps,vx_positions[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.axvline(x=form_cycle, color='black', linestyle='--', label='Inicio Form')
+plt.axvline(x=obj_cycle, color='yellow', linestyle='--', label='Seguir Obj')
 plt.ylim([-20, 20])
 # naming the x axis
 plt.xlabel('t (ciclos)')
@@ -127,7 +135,7 @@ for text in legend.get_texts():
     text.set_fontsize(7)
 
 plt.subplots_adjust(right=0.8)
-legend.set_bbox_to_anchor((0.99, 1))
+legend.set_bbox_to_anchor((1.26, 1))
 
 plt.grid()
 
@@ -135,6 +143,8 @@ plt.figure()
 
 # velocityHist in y
 plt.plot(time_steps,vy_positions[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.axvline(x=form_cycle, color='black', linestyle='--', label='Inicio Form')
+plt.axvline(x=obj_cycle, color='yellow', linestyle='--', label='Seguir Obj')
 plt.ylim([-20, 20])
 # naming the x axis
 plt.xlabel('t (ciclos)')
@@ -149,7 +159,7 @@ for text in legend.get_texts():
     text.set_fontsize(7)
 
 plt.subplots_adjust(right=0.8)
-legend.set_bbox_to_anchor((0.99, 1))
+legend.set_bbox_to_anchor((1.26, 1))
 
 plt.grid()
 
@@ -206,6 +216,8 @@ phi_r_data = phi_data_array[:, 0, :]
 phi_l_data = phi_data_array[:, 1, :]
 
 plt.plot(time_steps,phi_r_data[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.axvline(x=form_cycle, color='black', linestyle='--', label='Inicio Form')
+plt.axvline(x=obj_cycle, color='yellow', linestyle='--', label='Seguir Obj')
 plt.ylim([-40, 40])
 # naming the x axis
 plt.xlabel('t (ciclos)')
@@ -223,6 +235,8 @@ plt.subplots_adjust(right=0.8)
 legend.set_bbox_to_anchor((0.99, 1))
 plt.figure()
 plt.plot(time_steps,phi_l_data[graphCycleStart:graphCycleEnd,NStart:N], label = labels)
+plt.axvline(x=form_cycle, color='black', linestyle='--', label='Inicio Form')
+plt.axvline(x=obj_cycle, color='yellow', linestyle='--', label='Seguir Obj')
 plt.ylim([-40, 40])
 # naming the x axis
 plt.xlabel('t (ciclos)')
@@ -238,6 +252,17 @@ for text in legend.get_texts():
 plt.subplots_adjust(right=0.8)
 legend.set_bbox_to_anchor((0.99, 1))
 
+plt.figure()
+plt.plot(time_steps,normV_data[graphCycleStart:graphCycleEnd])
+plt.axvline(x=form_cycle, color='black', linestyle='--', label='Inicio Form')
+plt.axvline(x=obj_cycle, color='yellow', linestyle='--', label='Seguir Obj')
+plt.ylim([-40, 40])
+# naming the x axis
+plt.xlabel('t (ciclos)')
+# naming the y axis
+plt.ylabel('Velocidad (m/s)')
+# giving a title to my graph
+plt.title('Norma de la velocidad de la formación')
 # function to show the plot
 plt.show()
 # Create a figure and axis
@@ -246,7 +271,7 @@ ax.set_xlim(-1.9, 1.9)
 ax.set_ylim(-2.4, 2.4)
 
 # Initialize the scatter plots for the agents, obstacles, and goal
-scatter_agents = ax.scatter([], [], marker='o', color ='green', label='Agents', zorder=5, s = diam_agente/factor_m)
+scatter_agents = ax.scatter([], [], marker='o', color ='green', label='Agentes', zorder=5, s = diam_agente/factor_m)
 scatter_goal = ax.scatter([], [], marker='*', color='yellow', label='Objetivo', zorder=2, s = 0.1/factor_m)
 scatter_obstacles = ax.scatter([], [], marker='o', color='purple', label='Obstáculos', zorder=3, s = sizeO/factor_m)
 
