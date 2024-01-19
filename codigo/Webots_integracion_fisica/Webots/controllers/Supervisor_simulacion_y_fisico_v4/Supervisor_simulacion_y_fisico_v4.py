@@ -2,8 +2,8 @@
 % SIMULACIÓN MODELO DINÁMICO CON CONTROL DE FORMACIÓN, USANDO COSENO
 % HIPERBÓLICO, Y EVASIÓN DE COLISIONES INCLUYENDO LÍMITES DE VELOCIDAD
 % =========================================================================
-% Autor: Andrea Maybell Peña Echeverría
-% Última modificación: 27/09/2019
+% Autor: Alejandro Rodríguez
+% Última modificación: 12/1/2024
 % (MODELO 6)
 % =========================================================================
 % El siguiente script implementa la simulación del modelo dinámico de
@@ -40,9 +40,11 @@ TIME_STEP = 64
 supervisor = Supervisor()
 """real or not"""
 fisico = 0  # 0 to use Webots, 1 to use Robotat
-r_initial_conditions = 1 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
+initial_conditions_file = 'finaltrial_6A_ADD_h_3.npz'
+r_initial_conditions = 0 # 0 para simulación nueva 1 para simulación basada en condiciones iniciales físicas
 r_obs = 0 # 0 para obstaculos virtuales 1 para obstaculos reales (markers)
 r_obj = 0 # 0 para objetivo virtual 1 para objetivo real
+r_webots_visual = 0
 MAX_SPEED = 30						# velocidad máxima
 
 # Matriz de formación
@@ -86,8 +88,8 @@ if (r_initial__conditions == 1):
 
 """
 if (r_initial_conditions == 1):
-    initial_data = np.load('finaltrial_6A_AAA_f_2.npz')
-    ciclo = initial_data['begin_alg_time']
+    initial_data = np.load(initial_conditions_file)
+    real_begin_alg_time = initial_data['begin_alg_time']
     r_obs = initial_data['r_obs']
     r_obj = initial_data['r_obj']
     form_shape = initial_data['form_shape']
@@ -182,6 +184,12 @@ def update_data(robotat, markers_to_use):
     finally:
         return pose_eul   
 
+def format_number(number,symbol):
+    if number == False:
+        return "-"
+    else:
+        return f'{round(number,2):.2f} {symbol}'
+
 if (fisico == 1):
     try:
         robotat = robotat_connect()
@@ -200,6 +208,7 @@ sizeVec = size.getSFVec2f()				# vector con el tamaño de la arena
 
 """ OBSTACULOS """
 cantO = 3  # Adjust this to the number of obstacles you have
+quantOMax = 3
 Obstaculos = []
 posObs = []
 posObsAct = np.empty([2,cantO])
@@ -214,7 +223,11 @@ for i in range(0, cantO):
     posObsAct[0][i] = posObs[i].getSFVec3f()[0]
     posObsAct[1][i] = posObs[i].getSFVec3f()[1]
 
-sizeO = 3*Obstaculos[0].getField("majorRadius").getSFFloat() # tamaño del obstáculo
+safety_distance = 0.04
+#sizeO = 3*Obstaculos[0].getField("majorRadius").getSFFloat()
+#Obstaculos[0].getField("majorRadius").setSFFloat(0.1)
+sizeO = 1*Obstaculos[0].getField("majorRadius").getSFFloat()+1*Obstaculos[0].getField("minorRadius").getSFFloat()+ safety_distance # tamaño del obstáculo
+
 print(sizeO)
 #print(sizeO) 0.175m
 #print(Obstaculos)
@@ -304,7 +317,7 @@ while(cW1 > 1 or cW2 > 1):
 
 Xi = X
 
-for i in range(0, 3):
+for i in range(0, quantOMax):
     if (obs_active == 0):
         posObs[i].setSFVec3f([-3.3, i*0.9, -6.39203e-05])
     
@@ -323,7 +336,7 @@ if (fisico == 1):
     if (r_obj == 1):
         pObjVec[0] = agents_pose[obj_marker,0]
         pObjVec[1] = agents_pose[obj_marker,1]
-        pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
+        #pObj.setSFVec3f([pObjVec[0], pObjVec[1], -6.39203e-05])
 
 for b in range(0, NMax):
     if (b<NStart or b>=N):
@@ -355,6 +368,9 @@ if (r_initial_conditions == 1):
 if (r_initial_conditions == 1):
     for i in range(0, cantO):
         posObs[i].setSFVec3f([posObsAct[0,i], posObsAct[1,i], -6.39203e-05])
+    
+    pObj.setSFVec3f([pObjVec[0], pObjVec[1], 0.3])
+    
 
 for b in range(NStart, N):
     if (agent_setup == 1): # random agent position spawn
@@ -417,12 +433,12 @@ for b in range(NStart, N):
     #PosTodos[b].setSFVec3f([X[1,b], X[0,b], -6.39203e-05])
     #PosTodos[b].setSFVec3f([setup_pos[b,0], setup_pos[b,1], -6.39203e-05])
   
-
+"""
 if (fisico == 1):
     PosRealAgents = np.array(PosTodosVec)
     RotRealAgents = np.array(RotTodosVec)
     np.savez('initial_conditions_f.npz', PosRealAgents = PosRealAgents, RotRealAgents = RotRealAgents, posIniPosVec = posIniPosVec,  posObsAct = posObsAct, pObjVec = pObjVec, NStart = NStart, N = N)
-    
+"""    
 """    
 for obstacle in range(0, len(posObs)):
     posObs[obstacle].setSFVec3f([setup_pos[obstacle+10,0], setup_pos[obstacle+10,1], -6.39203e-05])
@@ -440,13 +456,14 @@ V = np.zeros([2,N])
 # Matriz de obstaculos
 #posObsAct = np.empty([2,cantO])
 
-d = Fmatrix(form_shape,rigidity_level)
-print(d)
+formation_matrix = Fmatrix(form_shape,rigidity_level)
+print(formation_matrix)
 
 # Main loop:
 cambio = 0	
-if (r_initial_conditions):
+if (r_initial_conditions == 1):
     cambio = 1
+    begin_alg_time = 0
 					# variable para cambio de control 
 while supervisor.step(TIME_STEP) != -1:
     #print(posActuales)
@@ -513,7 +530,7 @@ while supervisor.step(TIME_STEP) != -1:
         for h in range(NStart,N):
             dist = np.asarray([posActuales[0][g]-posActuales[0][h], posActuales[1][g]-posActuales[1][h]])	# vector xi - xj   
             mdist = math.sqrt(dist[0]**2 + dist[1]**2)														# norma euclidiana vector xi - xj
-            dij = formation_edge*d[g][h]																				# distancia deseada entre agentes i y j
+            dij = formation_edge*formation_matrix[g][h]																				# distancia deseada entre agentes i y j
             
 			# Peso añadido a la ecuación de consenso
             if(mdist == 0 or mdist >= R):
@@ -612,7 +629,7 @@ while supervisor.step(TIME_STEP) != -1:
     trajectory.append(posActuales.copy())
     velocityHist.append(V.copy())
     normVHist.append(normV)
-    objHist.append(pObjVec)
+    objHist.append(pObjVec.copy())
     obsHist.append(posObsAct.copy())
     formation_mseHist.append(formation_mse)
     rotHist.append(rotActuales.copy())
@@ -637,53 +654,165 @@ while supervisor.step(TIME_STEP) != -1:
         rot_data = np.array(rotHist)
         NStart = NStart + 1
         obs_start_marker = obs_start_marker + 1 
-        obj_marker = obj_marker + 1 
-        np.savez('finaltrial_6A_ADD_f_4.npz', trajectory_data = trajectory_data,\
-                               velocity_data = velocity_data,\
-                               normV_data = normV_data,\
-                               obj_data = obj_data,\
-                               obs_data = obs_data,\
-                               formation_mse_data = formation_mse_data,\
-                               rot_data = rot_data,\
-                               total_cycle = ciclo,\
-                               form_cycle = form_cycle,\
-                               obj_cycle = obj_cycle,\
-                               quantO = cantO,\
-                               posObsAct = posObsAct,\
-                               sizeO = sizeO,\
-                               NStart = NStart,\
-                               N = N,\
-                               NMax = NMax,\
-                               pObjVec = pObjVec,\
-                               PosRealAgents = PosRealAgents,\
-                               RotRealAgents = RotRealAgents,\
-                               begin_alg_time = begin_alg_time,\
-                               posIniPosVec = posIniPosVec,\
-                               fisico = fisico,\
-                               r_initial_conditions = r_initial_conditions,\
-                               r_obs = r_obs,\
-                               r_obj = r_obj,\
-                               TIME_STEP = TIME_STEP,\
-                               agent_setup = agent_setup,\
-                               obs_active = obs_active,\
-                               initial_pos_setup = initial_pos_setup,\
-                               r = r,\
-                               R = R,\
-                               MAX_SPEED = MAX_SPEED,\
-                               form_shape = form_shape,\
-                               rigidity_level = rigidity_level,\
-                               total_agent_number = total_agent_number,\
-                               obj_marker = obj_marker,\
-                               obs_start_marker = obs_start_marker,\
-                               setup_starting_point = setup_starting_point,\
-                               setup_shape = setup_shape,\
-                               setup_shape_space = setup_shape_space,\
-                               formation_edge = formation_edge,\
-                               r_f = r_f,\
-                               l_f = l_f,\
-                               a_f = a_f,\
-                               obj_success = obj_success,\
-                               obj_success_cycle = obj_success_cycle)       
+        obj_marker = obj_marker + 1
+        if (r_initial_conditions == 0):
+            np.savez('trial0', trajectory_data = trajectory_data,\
+                                       velocity_data = velocity_data,\
+                                       normV_data = normV_data,\
+                                       obj_data = obj_data,\
+                                       obs_data = obs_data,\
+                                       formation_mse_data = formation_mse_data,\
+                                       rot_data = rot_data,\
+                                       total_cycle = ciclo,\
+                                       form_cycle = form_cycle,\
+                                       obj_cycle = obj_cycle,\
+                                       quantO = cantO,\
+                                       posObsAct = posObsAct,\
+                                       sizeO = sizeO,\
+                                       NStart = NStart,\
+                                       N = N,\
+                                       NMax = NMax,\
+                                       pObjVec = pObjVec,\
+                                       PosRealAgents = PosRealAgents,\
+                                       RotRealAgents = RotRealAgents,\
+                                       begin_alg_time = begin_alg_time,\
+                                       posIniPosVec = posIniPosVec,\
+                                       fisico = fisico,\
+                                       r_initial_conditions = r_initial_conditions,\
+                                       r_obs = r_obs,\
+                                       r_obj = r_obj,\
+                                       TIME_STEP = TIME_STEP,\
+                                       agent_setup = agent_setup,\
+                                       obs_active = obs_active,\
+                                       initial_pos_setup = initial_pos_setup,\
+                                       r = r,\
+                                       R = R,\
+                                       MAX_SPEED = MAX_SPEED,\
+                                       form_shape = form_shape,\
+                                       rigidity_level = rigidity_level,\
+                                       total_agent_number = total_agent_number,\
+                                       obj_marker = obj_marker,\
+                                       obs_start_marker = obs_start_marker,\
+                                       setup_starting_point = setup_starting_point,\
+                                       setup_shape = setup_shape,\
+                                       setup_shape_space = setup_shape_space,\
+                                       formation_edge = formation_edge,\
+                                       r_f = r_f,\
+                                       l_f = l_f,\
+                                       a_f = a_f,\
+                                       obj_success = obj_success,\
+                                       obj_success_cycle = obj_success_cycle)       
+        
+        if (r_initial_conditions == 1):
+            try: 
+                import re
+                from prettytable import PrettyTable
+                # Define a regular expression pattern to match either "_h_" or "_f_"
+                pattern = re.compile(r'(_[hf]_)')
+                filename_without_extension = initial_conditions_file.split('.')[0]
+                # Use re.sub to replace the matched pattern with '_v_'
+                formatted_file = re.sub(pattern, '_v_', initial_conditions_file)
+                table_namefile = re.sub(pattern, '_t_', filename_without_extension)
+                   
+                np.savez(formatted_file, trajectory_data = trajectory_data,\
+                                       velocity_data = velocity_data,\
+                                       normV_data = normV_data,\
+                                       obj_data = obj_data,\
+                                       obs_data = obs_data,\
+                                       formation_mse_data = formation_mse_data,\
+                                       rot_data = rot_data,\
+                                       total_cycle = ciclo,\
+                                       form_cycle = form_cycle,\
+                                       obj_cycle = obj_cycle,\
+                                       quantO = cantO,\
+                                       posObsAct = posObsAct,\
+                                       sizeO = sizeO,\
+                                       NStart = NStart,\
+                                       N = N,\
+                                       NMax = NMax,\
+                                       pObjVec = pObjVec,\
+                                       PosRealAgents = PosRealAgents,\
+                                       RotRealAgents = RotRealAgents,\
+                                       begin_alg_time = begin_alg_time,\
+                                       posIniPosVec = posIniPosVec,\
+                                       fisico = fisico,\
+                                       r_initial_conditions = r_initial_conditions,\
+                                       r_obs = r_obs,\
+                                       r_obj = r_obj,\
+                                       TIME_STEP = TIME_STEP,\
+                                       agent_setup = agent_setup,\
+                                       obs_active = obs_active,\
+                                       initial_pos_setup = initial_pos_setup,\
+                                       r = r,\
+                                       R = R,\
+                                       MAX_SPEED = MAX_SPEED,\
+                                       form_shape = form_shape,\
+                                       rigidity_level = rigidity_level,\
+                                       total_agent_number = total_agent_number,\
+                                       obj_marker = obj_marker,\
+                                       obs_start_marker = obs_start_marker,\
+                                       setup_starting_point = setup_starting_point,\
+                                       setup_shape = setup_shape,\
+                                       setup_shape_space = setup_shape_space,\
+                                       formation_edge = formation_edge,\
+                                       r_f = r_f,\
+                                       l_f = l_f,\
+                                       a_f = a_f,\
+                                       obj_success = obj_success,\
+                                       obj_success_cycle = obj_success_cycle)
+                                       
+                funciones.figure_gen(initial_conditions_file, 1)
+                funciones.figure_gen(formatted_file, 1)
+                funciones.table_gen(initial_conditions_file,formatted_file)
+                       
+            except e:
+                print(e)
+                np.savez('trial0.npz', trajectory_data = trajectory_data,\
+                                       velocity_data = velocity_data,\
+                                       normV_data = normV_data,\
+                                       obj_data = obj_data,\
+                                       obs_data = obs_data,\
+                                       formation_mse_data = formation_mse_data,\
+                                       rot_data = rot_data,\
+                                       total_cycle = ciclo,\
+                                       form_cycle = form_cycle,\
+                                       obj_cycle = obj_cycle,\
+                                       quantO = cantO,\
+                                       posObsAct = posObsAct,\
+                                       sizeO = sizeO,\
+                                       NStart = NStart,\
+                                       N = N,\
+                                       NMax = NMax,\
+                                       pObjVec = pObjVec,\
+                                       PosRealAgents = PosRealAgents,\
+                                       RotRealAgents = RotRealAgents,\
+                                       begin_alg_time = begin_alg_time,\
+                                       posIniPosVec = posIniPosVec,\
+                                       fisico = fisico,\
+                                       r_initial_conditions = r_initial_conditions,\
+                                       r_obs = r_obs,\
+                                       r_obj = r_obj,\
+                                       TIME_STEP = TIME_STEP,\
+                                       agent_setup = agent_setup,\
+                                       obs_active = obs_active,\
+                                       initial_pos_setup = initial_pos_setup,\
+                                       r = r,\
+                                       R = R,\
+                                       MAX_SPEED = MAX_SPEED,\
+                                       form_shape = form_shape,\
+                                       rigidity_level = rigidity_level,\
+                                       total_agent_number = total_agent_number,\
+                                       obj_marker = obj_marker,\
+                                       obs_start_marker = obs_start_marker,\
+                                       setup_starting_point = setup_starting_point,\
+                                       setup_shape = setup_shape,\
+                                       setup_shape_space = setup_shape_space,\
+                                       formation_edge = formation_edge,\
+                                       r_f = r_f,\
+                                       l_f = l_f,\
+                                       a_f = a_f,\
+                                       obj_success = obj_success,\
+                                       obj_success_cycle = obj_success_cycle)     
         if (fisico == 1):
             robotat_disconnect(robotat)
         lock.release()
