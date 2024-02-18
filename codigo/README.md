@@ -18,7 +18,7 @@ El funcionamiento básico del algoritmo implementado en físico se resume en lo 
 
 - En Webots se tiene dos programas controladores principales.
     - Supervisor: uno que sirve como la unidad de procesamiento centralizada del algoritmo, que calcula las trayectorias en base a las posiciones actuales.
-    - Controlador de agente: Básicamente consistente en traducir las velocidades para el modelo del uniclo y enviarlo a los agentes.
+    - Controlador de agente (pruebaMatrizDifeoMorfismo): Básicamente consistente en traducir las velocidades para el modelo del uniclo y enviarlo a los agentes.
 
 ## Resumen de carpetas
 
