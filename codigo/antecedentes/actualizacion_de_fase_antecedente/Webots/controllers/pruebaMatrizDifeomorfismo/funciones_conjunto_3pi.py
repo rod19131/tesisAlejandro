@@ -1,3 +1,5 @@
+# Autor: José Alejandro Rodríguez Porras
+# Comunicación con agente físico Pololu 3Pi+
 import socket
 import struct
 def robotat_3pi_connect(agent_id):

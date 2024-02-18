@@ -2,7 +2,8 @@
 % CONTROLADOR DE AGENTES PARA TRANSFORMACIÓN DE VELOCIDADES LINEALES A
 % VELOCIDADES RADIALES DE LAS RUEDAS
 % =========================================================================
-% Autor: Alejandro Rodríguez
+# Autor: José Alejandro Rodríguez Porras
+# Código basado en el trabajo previo de: Andrea Maybell Peña Echeverría
 % =========================================================================
 % El siguiente script implementa las transformaciones necesarias para que
 % los robots E-Puck se muevan a la velocidad determinada por el Supervisor.

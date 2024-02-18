@@ -1,3 +1,5 @@
+# Autor: José Alejandro Rodríguez Porras
+# Generación de gráficas de las corridas del algoritmo, de los datos guardados en el archivo .npz, de la corrida
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation

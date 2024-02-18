@@ -3,8 +3,8 @@
 # HIPERBÓLICO, Y EVASIÓN DE COLISIONES CON EVASIÓN DE OBSTÁCULOS,
 # INCLUYENDO LÍMITES DE VELOCIDAD Y CAMBIO DE FORMACIÓN
 # =========================================================================
-# Autor: Andrea Maybell Peña Echeverría
-# Última modificación: 01/04/2019
+# Autor: José Alejandro Rodríguez Porras
+# Código basado en el trabajo previo de: Andrea Maybell Peña Echeverría
 # (MODELO 6 con obstáculos)
 # =========================================================================
 # El siguiente script implementa la simulación del modelo dinámico de

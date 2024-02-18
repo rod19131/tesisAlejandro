@@ -1,7 +1,7 @@
 from funciones_conjunto import *
 import numpy as np
 import pickle
-
+# Adquisición de múltiples poses, múltiples veces de los marcadores del robotat al conectarse con el servidor.
 robotat = robotat_connect()
 if robotat:
     print("connected to robotat")

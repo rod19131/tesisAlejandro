@@ -2,9 +2,8 @@
 % SIMULACIÓN MODELO DINÁMICO CON CONTROL DE FORMACIÓN, USANDO COSENO
 % HIPERBÓLICO, Y EVASIÓN DE COLISIONES INCLUYENDO LÍMITES DE VELOCIDAD
 % =========================================================================
-% Autor: Andrea Maybell Peña Echeverría
-% Última modificación: 27/09/2019
-% (MODELO 6)
+# Autor: José Alejandro Rodríguez Porras
+# Código basado en el trabajo previo de: Andrea Maybell Peña Echeverría
 % =========================================================================
 % El siguiente script implementa la simulación del modelo dinámico de
 % modificación a la ecuación de consenso utilizando evasión de obstáculos y
@@ -15,7 +14,7 @@
 % Es un controlador del tipo supervisor. 
 ========================================================================="""
 
-"""Supervisor3 controller."""
+"""Supervisor_simulacion_y_fisico_v3 controller."""
 
 # Imports de librerías
 from controller import Robot, Supervisor

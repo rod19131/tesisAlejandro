@@ -1,3 +1,5 @@
+# Autor: José Alejandro Rodríguez Porras
+# Comunicación con servidor Robotat para obtener las poses de los marcadores
 import socket
 import json
 import time

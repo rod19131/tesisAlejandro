@@ -1,8 +1,8 @@
 """ =========================================================================
 % FUNCIONES VARIAS
 % =========================================================================
-% Autor: Andrea Maybell Peña Echeverría
-% Última modificación: 01/09/2019
+# Autor: José Alejandro Rodríguez Porras
+# Código basado en el trabajo previo de: Andrea Maybell Peña Echeverría
 % ========================================================================= """
 
 # Librerías importadas

@@ -2,8 +2,8 @@
 % SIMULACIÓN MODELO DINÁMICO CON CONTROL DE FORMACIÓN, USANDO COSENO
 % HIPERBÓLICO, Y EVASIÓN DE COLISIONES INCLUYENDO LÍMITES DE VELOCIDAD
 % =========================================================================
-% Autor: Andrea Maybell Peña Echeverría
-% Última modificación: 27/09/2019
+% Autor: José Alejandro Rodríguez Porras
+% Código basado en el trabajo previo de: Andrea Maybell Peña Echeverría
 % (MODELO 6)
 % =========================================================================
 % El siguiente script implementa la simulación del modelo dinámico de

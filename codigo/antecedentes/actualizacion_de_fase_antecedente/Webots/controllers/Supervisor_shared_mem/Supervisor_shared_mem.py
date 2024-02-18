@@ -4,6 +4,7 @@
 % =========================================================================
 Autor: Alejandro Rodríguez
 Algoritmo de robótica de enjambre de sincronización y control de formaciones
+Enfocado en comunicación por memoria compartida
 % =========================================================================
 % El siguiente script implementa la simulación del modelo dinámico de
 % modificación a la ecuación de consenso utilizando evasión de obstáculos y
