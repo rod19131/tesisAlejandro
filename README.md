@@ -33,7 +33,7 @@ Información de contacto:
 ## Grabación de funcionamiento
 
 *gif de funcionamiento en Webots *
-![Image Alt text](/tesisAlejandro/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_AAA_f_1/animation_finaltrial_6A_AAA_f_1.gif))
+![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_AAA_f_1/animation_finaltrial_6A_AAA_f_1.gif))
 *gif de funcionaiento en entorno físico Robotat *
 
 
