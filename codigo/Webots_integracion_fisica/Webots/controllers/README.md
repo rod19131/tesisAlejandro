@@ -1,4 +1,3 @@
-
 # Controladores
 
 La carpeta `pruebaMatrizDifeomorfismo` contiene el controlador individual que se encarga de procesar las velocidades generadas por el algoritmo y mediante el modelo del uniciclo transformar las velocidades lineales en radiales para cada llanta del agente. En Webots es el controlador (`pruebaMatrizDifeomorfismo.py`) que se selecciona para cada entidad de Robot e-puck.

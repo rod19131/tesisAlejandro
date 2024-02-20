@@ -30,11 +30,11 @@ Información de contacto:
 | Videos | Simulaciones, Corridas en físico, explicaciones y demos |
 
 
-## Demo
-
-*gif de funcionamiento en Webots *
-
-*gif de funcionaiento en entorno físico Robotat *
+## Funcionamiento
+## Corrida en entorno físico (Robotat)
+![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_f_1/animation_finaltrial_6A_BCA_f_1.gif))
+## Corrida en entorno virtual (Webots)
+![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_v_1/animation_finaltrial_6A_BCA_v_1.gif))
 
 
 ## Documentación

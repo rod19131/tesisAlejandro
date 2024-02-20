@@ -1,13 +1,14 @@
 
 # Algoritmo de sincronización y control de formaciones
 
-El algoritmo se desarrolló por completo dentro del entorno de desarrollo de robots, Webots, para un funcionamiento híbrido en la vida real. Se trabajó con una cantidad de agentes de 1 a 9.
+El algoritmo se desarrolló por completo dentro del entorno de desarrollo de robots, Webots, para un funcionamiento híbrido en la vida real (Robotat). Se trabajó con una cantidad de agentes de 1 a 9.
 
 Las características principales del algoritmo son las siguientes:
 - Acercamiento de agentes entre sí
 - Construcción de formación 
 - Evasión de obstáculos
 - Movimiento de un agente líder hacia un objetivo, arrastrando a los demás agentes, manteniendo formación
+- Naturaleza dinámica
 
 Además de las características previamente mencionadas, se tiene una etapa previa de posicionamiento inicial automático de agentes en un espacio determinado, para facilitar los experimentos.
 
@@ -17,7 +18,7 @@ El funcionamiento básico del algoritmo implementado en físico se resume en lo 
 
 - En Webots se tiene dos programas controladores principales.
     - Supervisor: uno que sirve como la unidad de procesamiento centralizada del algoritmo, que calcula las trayectorias en base a las posiciones actuales.
-    - Controlador de agente: Básicamente consistente en traducir las velocidades para el modelo del uniclo y enviarlo a los agentes.
+    - Controlador de agente (pruebaMatrizDifeoMorfismo): Básicamente consistente en traducir las velocidades para el modelo del uniclo y enviarlo a los agentes.
 
 ## Resumen de carpetas
 
