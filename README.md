@@ -27,7 +27,7 @@ Información de contacto:
 | Anexos | Figuras menos relevantes, enlaces a videos y contenido extra |
 | codigo | Carpetas principales con programas para ejecutar el algoritmo, destacando Webots y la comunicación con el servidor/agentes móviles |
 | Documentos | Tésis, Protocolo y Figuras |
-| Videos | Simulaciones, Corridas en físico, explicaciones y demos |
+| Videos | Tutorial, simulaciones, Corridas en físico, explicaciones y demos |
 
 
 ## Funcionamiento
