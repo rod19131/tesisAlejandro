@@ -4,7 +4,7 @@
 
 ## Tutorial
 
-[![Tutorial de uso](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
+[![Tutorial de uso](https://img.youtube.com/vi/VzYabKmbXKY/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
 
 ## Funcionamiento
 ## Corrida en entorno físico (Robotat)
