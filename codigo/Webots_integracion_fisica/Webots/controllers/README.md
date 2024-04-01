@@ -19,3 +19,56 @@ La carpeta `Supervisor_simulacion_y_fisico_demo` contiene el mismo controlador y
 | Supervisor_simulacion_y_fisico_v3 | Versión 3 del Supervisor_simulacion_y_fisico |
 | Supervisor_simulacion_y_fisico_v4 | Versión final del algoritmo |
 | Supervisor_simulacion_y_fisico_demo | Es igual al v4, solo que que una carpeta más limpia y ordenada, con propósito de demonstración |
+
+Los Supervisores `Supervisor_simulacion_y_fisico_v4` y `Supervisor_simulacion_y_fisico_demo` guardan en un archivo `.npz` las variables relevantes de la corrida como tal. A continuación se muestra una tabla con las variables guardadas que contiene este archivo `.npz` y la explicación de qué representa. (Es una versión más actualizada que contiene más variables que las que se muestran en el documento de tésis.)
+
+## Variables
+
+| Variable Name           | Comment                                                               |
+|-------------------------|-----------------------------------------------------------------------|
+| `trajectory_data`       | Agents positions register of the run.                                 |
+| `velocity_data`         | Agents velocities register of the run.                                |
+| `normV_data`            | Agents velocities norm register of the run.                           |
+| `obj_data`              | Objective positions register of the run.                              |
+| `obs_data`              | Obstacle positions register of the run.                               |
+| `formation_mse_data`    | MSE (Mean Squared Error) register of the run for formation.           |
+| `rot_data`              | Rotation data register of the run.                                     |
+| `total_cycle`           | Total cycles of the run.                                              |
+| `form_cycle`            | Cycle when formation construction began.                              |
+| `obj_cycle`             | Cycle when the leader began following the objective.                  |
+| `quantO`                | Total quantity of obstacles.                                          |
+| `posObsAct`             | Last position of obstacles when the run ended.                        |
+| `sizeO`                 | Size of the obstacles.                                                |
+| `NStart`                | Lower limit of the interval of agents.                                |
+| `N`                     | Higher limit of the interval of agents.                               |
+| `NMax`                  | Maximum agent number that the formation shape can contain.            |
+| `pObjVec`               | Last position of objective when the run ended.                        |
+| `PosRealAgents`         | Position of the agents at the start of stage 1 (initial conditions).  |
+| `RotRealAgents`         | Rotation of the agents at the start of stage 1 (initial conditions).  |
+| `begin_alg_time`        | Cycle when the algorithm itself started (start of stage 1).           |
+| `posIniPosVec`          | Position of initial position marks.                                   |
+| `fisico`                | Physical (Robotat) or virtual (Webots) world run.                     |
+| `r_initial_conditions`  | Real initial conditions active or not.                                |
+| `r_obs`                 | Real or virtual obstacles.                                            |
+| `r_obj`                 | Real or virtual objective.                                            |
+| `TIME_STEP`             | Time step of the program.                                             |
+| `agent_setup`           | Agent setup used for the run.                                         |
+| `obs_active`            | Obstacles active or not.                                              |
+| `initial_pos_setup`     | Initial position setup (random or not).                               |
+| `r`                     | Radius to consider to avoid collisions.                               |
+| `R`                     | Radar radius.                                                         |
+| `MAX_SPEED`             | Maximum speed of agents' wheels allowed.                              |
+| `form_shape`            | Shape of the formation.                                               |
+| `rigidity_level`        | Rigidity level of the formation.                                      |
+| `total_agent_number`    | Total number of agents involved in the run.                           |
+| `obj_marker`            | Robotat marker used for the objective in real life.                   |
+| `obs_start_marker`      | Robotat starting marker used for the obstacles in real life.          |
+| `setup_starting_point`  | Beginning of the initial positions shape.                             |
+| `setup_shape`           | Initial positions shape.                                              |
+| `setup_shape_space`     | Space covered with the initial positions.                             |
+| `formation_edge`        | Length of the edge of the formation.                                  |
+| `r_f`                   | Robot dimensions for unicycle model (radius).                         |
+| `l_f`                   | Robot dimensions for unicycle model (length).                         |
+| `a_f`                   | Robot dimensions for unicycle model (additional parameter).          |
+| `obj_success`           | Indicates if the objective was successful.                            |
+| `obj_success_cycle`     | Objective success cycle.                                              |
