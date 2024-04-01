@@ -9,7 +9,7 @@ Presionar el enlace a continuación para ver el repositorio de videos en Youtube
 [Videos en Youtube](https://www.youtube.com/@rod19131/videos)
 
 ## Tutorial
-Hacer click en la imagen para ver el video o presionar [aquí](https://www.youtube.com/watch?v=VzYabKmbXKY).
+Hacer click en la imagen para ver el video o presionar [aquí](https://www.youtube.com/watch?v=GXifGBwB6zU).
 
-[![Tutorial de uso](https://img.youtube.com/vi/VzYabKmbXKY/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
+[![Tutorial de uso](https://img.youtube.com/vi/GXifGBwB6zU/0.jpg)](https://www.youtube.com/watch?v=GXifGBwB6zU)
 
