@@ -38,6 +38,9 @@ Información de contacto:
 ![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_v_1/animation_finaltrial_6A_BCA_v_1.gif)
 
 ## Video funcionamiento en físico
+
+Hacer click en la imagen para ver el video o presionar [aquí](https://www.youtube.com/watch?v=VzYabKmbXKY).
+
 [![Video físico](https://img.youtube.com/vi/VzYabKmbXKY/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
 
 ## Fotogramas de Funcionamiento Físico
@@ -50,7 +53,7 @@ Información de contacto:
 
 ## Documentación
 
-[Repostorio del proyecto](https://github.com/rod19131/tesisAlejandro)
+[Repositorio del proyecto](https://github.com/rod19131/tesisAlejandro)
 
 Librerías principales de Python para :
 
