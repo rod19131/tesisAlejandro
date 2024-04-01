@@ -3,8 +3,9 @@
 [Drive de videos](https://drive.google.com/drive/folders/1SIaw9U1qSuY1zaGESRhfo3ztOcMoPJ9t?usp=sharing)
 
 ## Tutorial
-
+Hacer click en la imagen para ver el video o presionar [aquí]](https://www.youtube.com/watch?v=VzYabKmbXKY).
 [![Tutorial de uso](https://img.youtube.com/vi/VzYabKmbXKY/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
+
 
 ## Funcionamiento
 ## Corrida en entorno físico (Robotat)
