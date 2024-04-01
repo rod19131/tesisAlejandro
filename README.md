@@ -32,7 +32,7 @@ Información de contacto:
 
 ## Funcionamiento
 ## Fotogramas de Funcionamiento
-![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_f_1/snapshots/BCA_f_3_snapshot0.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot0.PNG)
 ## Corrida en entorno físico (Robotat)
 ![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_f_1/animation_finaltrial_6A_BCA_f_1.gif)
 ## Corrida en entorno virtual (Webots)
