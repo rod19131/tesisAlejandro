@@ -61,7 +61,7 @@ N = 6	# Last agent (higher limit of the interval of agents)
 r = 0.07	# radius to consider to avoid collisions (in centimeters)
 R = 4	# radar range (how far can the agents detect each other) 
 """obstacles and objective"""
-obs_active = 0        # 0: obs not active 1: obs active
+obs_active = 1        # 0: obs not active 1: obs active
 obj_marker = 9        # starting OptiTrack marker for obstacles 
 obs_start_marker = 10 # starting OptiTrack marker for objective  
 robotat_markers = [1,2,3,4,5,6,7,8,9,10,11,12] #OptiTrack markers
@@ -680,7 +680,7 @@ while supervisor.step(TIME_STEP) != -1:
         obj_marker = obj_marker + 1
         # if a new run then saved in npz file with a name of your choosing
         if (r_initial_conditions == 0):
-            np.savez('trial0.npz', trajectory_data = trajectory_data, # agents positions register of the run
+            np.savez('finaltrial_6A_BCA_f_5.npz', trajectory_data = trajectory_data, # agents positions register of the run
                                        velocity_data = velocity_data, # agents velocities registrr of the run
                                        normV_data = normV_data,       # agents velocities norm register of the run
                                        obj_data = obj_data,           # objetive positions register of the run
