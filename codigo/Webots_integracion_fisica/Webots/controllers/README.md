@@ -72,3 +72,12 @@ Los Supervisores `Supervisor_simulacion_y_fisico_v4` y `Supervisor_simulacion_y_
 | `a_f`                   | Robot dimensions for unicycle model (additional parameter).          |
 | `obj_success`           | Indicates if the objective was successful.                            |
 | `obj_success_cycle`     | Objective success cycle.                                              |
+
+
+
+
+
+
+
+
+`La comida sabe a comida.`
