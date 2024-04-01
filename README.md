@@ -31,13 +31,22 @@ Información de contacto:
 
 
 ## Funcionamiento
-## Fotogramas de Funcionamiento
-![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot0.PNG)
+
 ## Corrida en entorno físico (Robotat)
 ![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_f_1/animation_finaltrial_6A_BCA_f_1.gif)
 ## Corrida en entorno virtual (Webots)
 ![Image Alt text](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_demo/finaltrials/finaltrial_6A_BCA_v_1/animation_finaltrial_6A_BCA_v_1.gif)
 
+## Video funcionamiento en físico
+[![Video físico](https://img.youtube.com/vi/VzYabKmbXKY/0.jpg)](https://www.youtube.com/watch?v=VzYabKmbXKY)
+
+## Fotogramas de Funcionamiento Físico
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot0.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot1.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot2.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot3.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot4.PNG)
+![Físico](/codigo/Webots_integracion_fisica/Webots/controllers/Supervisor_simulacion_y_fisico_v4/finaltrials/finaltrial_6A_BCA_f_3/snapshots/BCA_f_3_snapshot5.PNG)
 
 ## Documentación
 
